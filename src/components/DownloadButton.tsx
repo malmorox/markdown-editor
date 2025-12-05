@@ -1,11 +1,7 @@
 import React from "react";
 import { IoIosSave } from "react-icons/io";
 
-interface DownloadButtonProps {
-  content: string;
-}
-
-const DownloadButton: React.FC<DownloadButtonProps> = ({ content }) => {
+const DownloadButton = () => {
     const handleClick = () => {
         console.log("hola")
     };

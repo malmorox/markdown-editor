@@ -36,7 +36,7 @@ const MarkdownWorkspace: React.FC<MarkdownWorkspaceProps> = ({
                     <MarkdownInterpreter content={markdown} />
 
                     <div className="absolute bottom-8 right-8">
-                        <DownloadButton content={markdown} />
+                        <DownloadButton />
                     </div>
                 </div>
             </Panel>
