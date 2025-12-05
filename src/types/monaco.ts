@@ -1,0 +1,1 @@
+export type MonacoTheme = "vs-dark" | "light" | "hc-black";

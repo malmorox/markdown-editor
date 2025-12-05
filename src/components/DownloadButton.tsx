@@ -13,9 +13,9 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ content }) => {
     return (
         <button
             onClick={handleClick}
-            className="flex items-center gap-2 px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+            className="flex items-center justify-center w-16 h-16 py-2 rounded-xl bg-sky-400 text-white hover:bg-sky-500 cursor-pointer"
         >
-            <IoIosSave size={22} />
+            <IoIosSave size={32} color="white" />
         </button>
     );
 };
