@@ -1,17 +1,27 @@
-import { useState } from "react";
 import Editor from "@monaco-editor/react";
 
-export default function MarkdownEditor() {
-    const [value, setValue] = useState<string>("## Escribe tu markdown aquí");
+type MonacoTheme = "vs-dark" | "light" | "hc-black";
 
+
+interface MarkdownEditorProps {
+    value: string;
+    onChange: (v: string) => void;
+    theme: MonacoTheme;
+}
+
+export default function MarkdownEditor({
+    value,
+    onChange,
+    theme
+}: MarkdownEditorProps) {
     return (
         <div className="w-full h-[500px]">
             <Editor
                 height="100%"
                 defaultLanguage="markdown"
-                theme="vs-dark"
+                theme={theme}
                 value={value}
-                onChange={(v) => setValue(v ?? "")}
+                onChange={(v) => onChange(v ?? "")}
                 options={{
                     wordWrap: "on",
                     minimap: { enabled: false },
