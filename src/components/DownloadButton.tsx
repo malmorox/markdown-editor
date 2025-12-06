@@ -1,6 +1,12 @@
 import { IoIosSave } from "react-icons/io";
+import { useMarkdown } from "../hooks/useMarkdown";
 
 const DownloadButton = () => {
+    const { markdown } = useMarkdown();
+    const hasContent = markdown.trim().length > 0;
+
+    if (!hasContent) return null;
+
     const handleClick = () => {
         console.log("hola")
     };

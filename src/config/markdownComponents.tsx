@@ -1,54 +1,92 @@
 import type { Components } from "react-markdown";
 import type { MonacoTheme } from "../types/monaco";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 export const getMarkdownComponents = (theme: MonacoTheme): Components => {
-    const isDark = theme === "vs-dark" || theme === "light";
+    const isDark = theme === "vs-dark";
     
     return {
-        h1: ({ children }) => (
-            <h1 className={`text-4xl font-bold mt-8 mb-4 border-b pb-2 ${
-                isDark 
-                    ? "text-white border-gray-700" 
-                    : "text-gray-900 border-gray-300"
-            }`}>
-                {children}
-            </h1>
-        ),
-        h2: ({ children }) => (
-            <h2 className={`text-3xl font-bold mt-6 mb-3 ${
-                isDark ? "text-white" : "text-gray-900"
-            }`}>
-                {children}
-            </h2>
-        ),
-        h3: ({ children }) => (
-            <h3 className={`text-2xl font-bold mt-5 mb-2 ${
-                isDark ? "text-white" : "text-gray-900"
-            }`}>
-                {children}
-            </h3>
-        ),
-        h4: ({ children }) => (
-            <h4 className={`text-xl font-semibold mt-4 mb-2 ${
-                isDark ? "text-gray-200" : "text-gray-800"
-            }`}>
-                {children}
-            </h4>
-        ),
-        h5: ({ children }) => (
-            <h5 className={`text-lg font-semibold mt-3 mb-2 ${
-                isDark ? "text-gray-200" : "text-gray-800"
-            }`}>
-                {children}
-            </h5>
-        ),
-        h6: ({ children }) => (
-            <h6 className={`text-base font-semibold mt-2 mb-1 ${
-                isDark ? "text-gray-300" : "text-gray-700"
-            }`}>
-                {children}
-            </h6>
-        ),
+        h1: ({ children, node }) => {
+            const isFirst = node?.position?.start.line === 1;
+            
+            return (
+                <h1 className={`text-4xl font-bold mb-4 border-b pb-2 ${
+                    isFirst ? 'mt-0' : 'mt-8'
+                } ${
+                    isDark 
+                        ? "text-white border-gray-700" 
+                        : "text-gray-900 border-gray-300"
+                }`}>
+                    {children}
+                </h1>
+            );
+        },
+        h2: ({ children, node }) => {
+            const isFirst = node?.position?.start.line === 1;
+            
+            return (
+                <h2 className={`text-3xl font-bold mb-3 ${
+                    isFirst ? 'mt-0' : 'mt-6'
+                } ${
+                    isDark ? "text-white" : "text-gray-900"
+                }`}>
+                    {children}
+                </h2>
+            );
+        },
+        h3: ({ children, node }) => {
+            const isFirst = node?.position?.start.line === 1;
+            
+            return (
+                <h3 className={`text-2xl font-bold mb-2 ${
+                    isFirst ? 'mt-0' : 'mt-5'
+                } ${
+                    isDark ? "text-white" : "text-gray-900"
+                }`}>
+                    {children}
+                </h3>
+            );
+        },
+        h4: ({ children, node }) => {
+            const isFirst = node?.position?.start.line === 1;
+            
+            return (
+                <h4 className={`text-xl font-semibold mb-2 ${
+                    isFirst ? 'mt-0' : 'mt-4'
+                } ${
+                    isDark ? "text-gray-200" : "text-gray-800"
+                }`}>
+                    {children}
+                </h4>
+            );
+        },
+        h5: ({ children, node }) => {
+            const isFirst = node?.position?.start.line === 1;
+            
+            return (
+                <h5 className={`text-lg font-semibold mb-2 ${
+                    isFirst ? 'mt-0' : 'mt-3'
+                } ${
+                    isDark ? "text-gray-200" : "text-gray-800"
+                }`}>
+                    {children}
+                </h5>
+            );
+        },
+        h6: ({ children, node }) => {
+            const isFirst = node?.position?.start.line === 1;
+            
+            return (
+                <h6 className={`text-base font-semibold mb-1 ${
+                    isFirst ? 'mt-0' : 'mt-2'
+                } ${
+                    isDark ? "text-gray-300" : "text-gray-700"
+                }`}>
+                    {children}
+                </h6>
+            );
+        },
         p: ({ children }) => (
             <p className={`my-4 leading-relaxed ${
                 isDark ? "text-gray-200" : "text-gray-700"
@@ -92,8 +130,12 @@ export const getMarkdownComponents = (theme: MonacoTheme): Components => {
                 {children}
             </blockquote>
         ),
-        code: ({ inline, children }) =>
-            inline ? (
+        code: ({ node, className, children, ...props }) => {
+            const match = /language-(\w+)/.exec(className || '');
+            const language = match ? match[1] : '';
+            const isInline = !className;
+            
+            return isInline ? (
                 <code className={`px-1.5 py-0.5 rounded text-sm font-mono ${
                     isDark 
                         ? "bg-gray-800 text-pink-400" 
@@ -102,14 +144,22 @@ export const getMarkdownComponents = (theme: MonacoTheme): Components => {
                     {children}
                 </code>
             ) : (
-                <code className={`block p-4 rounded-lg overflow-x-auto my-4 border font-mono text-sm ${
-                    isDark 
-                        ? "bg-gray-900 text-gray-200 border-gray-700" 
-                        : "bg-gray-100 text-gray-900 border-gray-300"
-                }`}>
-                    {children}
-                </code>
-            ),
+                <SyntaxHighlighter
+                    style={isDark ? vscDarkPlus : prism}
+                    language={language}
+                    PreTag="div"
+                    className="my-4 rounded-lg overflow-hidden"
+                    customStyle={{
+                        margin: 0,
+                        padding: '1rem',
+                        fontSize: '0.875rem',
+                        backgroundColor: isDark ? '#0d1117' : '#f5f2f0'
+                    }}
+                >
+                    {String(children).replace(/\n$/, '')}
+                </SyntaxHighlighter>
+            );
+        },
         pre: ({ children }) => (
             <pre className="my-4">{children}</pre>
         ),
@@ -142,15 +192,19 @@ export const getMarkdownComponents = (theme: MonacoTheme): Components => {
             </tr>
         ),
         th: ({ children }) => (
-            <th className={`px-4 py-2 text-left font-semibold ${
-                isDark ? "text-gray-200" : "text-gray-900"
+            <th className={`px-4 py-2 text-left font-semibold border ${
+                isDark 
+                    ? "text-gray-200 border-gray-700" 
+                    : "text-gray-900 border-gray-300"
             }`}>
                 {children}
             </th>
         ),
         td: ({ children }) => (
-            <td className={`px-4 py-2 ${
-                isDark ? "text-gray-300" : "text-gray-700"
+            <td className={`px-4 py-2 border ${
+                isDark 
+                    ? "text-gray-300 border-gray-700" 
+                    : "text-gray-700 border-gray-300"
             }`}>
                 {children}
             </td>
