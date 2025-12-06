@@ -1,30 +1,14 @@
-import React from "react";
 import MarkdownEditor from "./MarkdownEditor";
 import MarkdownInterpreter from "./MarkdownInterpreter";
 import DownloadButton from "./DownloadButton";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import type { MonacoTheme } from "../types/monaco";
 
-interface MarkdownWorkspaceProps {
-    markdown: string;
-    setMarkdown: (value: string) => void;
-    theme: MonacoTheme;
-}
-
-const MarkdownWorkspace: React.FC<MarkdownWorkspaceProps> = ({
-    markdown,
-    setMarkdown,
-    theme
-}) => {
+const MarkdownWorkspace = () => {
     return (
         <PanelGroup direction="horizontal" className="w-full h-full">
             {/* EDITOR */}
             <Panel defaultSize={50} minSize={20}>
-                <MarkdownEditor
-                    value={markdown}
-                    onChange={setMarkdown}
-                    theme={theme}
-                />
+                <MarkdownEditor />
             </Panel>
 
             {/* Barra de redimensión */}
@@ -33,7 +17,7 @@ const MarkdownWorkspace: React.FC<MarkdownWorkspaceProps> = ({
             {/* INTÉRPRETE */}
             <Panel defaultSize={50} minSize={20}>
                 <div className="w-full h-full relative">
-                    <MarkdownInterpreter content={markdown} />
+                    <MarkdownInterpreter />
 
                     <div className="absolute bottom-8 right-8">
                         <DownloadButton />

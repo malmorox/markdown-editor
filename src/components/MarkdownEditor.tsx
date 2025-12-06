@@ -1,31 +1,29 @@
 import Editor from "@monaco-editor/react";
-import type { MonacoTheme } from "../types/monaco";
+import { useMarkdown } from "../hooks/useMarkdown";
+import { useTheme } from "../hooks/useTheme";
 
-interface MarkdownEditorProps {
-    value: string;
-    onChange: (v: string) => void;
-    theme: MonacoTheme;
-}
+export default function MarkdownEditor() {
+    const { markdown, setMarkdown } = useMarkdown();
+    const { theme } = useTheme();
 
-export default function MarkdownEditor({
-    value,
-    onChange,
-    theme,
-}: MarkdownEditorProps) {
     return (
         <div className="w-full h-full">
             <Editor
-                height="90vh"
+                height="100%"
                 defaultLanguage="markdown"
                 theme={theme}
-                value={value}
-                onChange={(v) => onChange(v ?? "")}
+                value={markdown}
+                onChange={(v) => setMarkdown(v ?? "")}
                 options={{
                     lineNumbers: "on",
                     wordWrap: "on",
                     minimap: { enabled: false },
                     fontSize: 14,
                     scrollBeyondLastLine: false,
+                    padding: {
+                        top: 24,
+                        bottom: 24
+                    }
                 }}
             />
         </div>

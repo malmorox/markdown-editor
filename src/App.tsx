@@ -1,33 +1,23 @@
-import { useState } from "react";
+import ThemeSwitcher from "./components/ThemeSwitcher";
 import MarkdownWorkspace from "./components/MarkdownWorkspace";
-import type { MonacoTheme } from "./types/monaco";
+import "./App.css"
 
 export default function App() {
-    const [markdown, setMarkdown] = useState<string>("## Escribe tu markdown aquí");
-    const [theme, setTheme] = useState<MonacoTheme>("vs-dark");
-
     return (
         <div className="w-full min-h-screen flex flex-col">
             {/* Barra superior POR HACER */}
-            <div className="flex text-white">
-                <select
-                    className="text-black"
-                    value={theme}
-                    onChange={(e) => setTheme(e.target.value as MonacoTheme)}
-                >
-                    <option value="vs-dark">Oscuro</option>
-                    <option value="light">Claro</option>
-                    <option value="hc-black">Alto contraste</option>
-                </select>
-            </div>
+            <header className="p-4">
+                <div className="flex items-center justify-between">
+                    <h1 className="text-xl font-bold text-gray-900">
+                        Markdown Editor
+                    </h1>
+                    <ThemeSwitcher />
+                </div>
+            </header>
             {/* Paneles */}
-            <div className="flex flex-row">
+            <div className="w-full h-200 rounded-3xl border border-sky-400 bg-[#1e1e1e] overflow-hidden">
                 {/* Espacio de trabajo */}
-                <MarkdownWorkspace
-                    markdown={markdown}
-                    setMarkdown={setMarkdown}
-                    theme={theme}
-                />
+                <MarkdownWorkspace />
             </div>
         </div>
     );
