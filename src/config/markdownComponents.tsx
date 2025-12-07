@@ -1,5 +1,5 @@
 import type { Components } from "react-markdown";
-import type { MonacoTheme } from "../types/monaco";
+import type { MonacoTheme } from "@types/monaco";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -163,15 +163,29 @@ export const getMarkdownComponents = (theme: MonacoTheme): Components => {
         pre: ({ children }) => (
             <pre className="my-4">{children}</pre>
         ),
-        table: ({ children }) => (
-            <div className="overflow-x-auto my-4">
-                <table className={`min-w-full border ${
-                    isDark ? "border-gray-700" : "border-gray-300"
-                }`}>
-                    {children}
-                </table>
-            </div>
-        ),
+        table: ({ children, node, ...props }) => {
+            // Si la tabla tiene atributo style, es HTML inline
+            const style = (node?.properties?.style as string) || '';
+            const hasInlineStyle = style.includes('width');
+            
+            if (hasInlineStyle) {
+                return (
+                    <div className="overflow-x-auto my-4">
+                        <table {...props}>{children}</table>
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="overflow-x-auto my-4">
+                    <table className={`border ${
+                        isDark ? "border-gray-700" : "border-gray-300"
+                    }`}>
+                        {children}
+                    </table>
+                </div>
+            );
+        },
         thead: ({ children }) => (
             <thead className={isDark ? "bg-gray-800" : "bg-gray-200"}>
                 {children}

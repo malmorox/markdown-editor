@@ -1,5 +1,5 @@
 import { IoIosSave } from "react-icons/io";
-import { useMarkdown } from "../hooks/useMarkdown";
+import { useMarkdown } from "@hooks/useMarkdown";
 
 const DownloadButton = () => {
     const { markdown } = useMarkdown();

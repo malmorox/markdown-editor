@@ -1,8 +1,9 @@
-import MarkdownEditor from "./MarkdownEditor";
-import MarkdownInterpreter from "./MarkdownInterpreter";
-import DownloadButton from "./DownloadButton";
+import MarkdownEditor from "@components/MarkdownEditor";
+import MarkdownInterpreter from "@components/MarkdownInterpreter";
+import DownloadButton from "@components/DownloadButton";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
+// Espacio de trabajo dividido en 2 paneles, el editor de Markdown y el intérprete que muestra su salida. Los paneles son redimensionables (de la libreria 'react-resizable-panels'), para dar libertad al usuario a la hora de trabajar.
 const MarkdownWorkspace = () => {
     return (
         <PanelGroup direction="horizontal" className="w-full h-full">

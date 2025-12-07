@@ -1,17 +1,21 @@
-import ThemeSwitcher from "./components/ThemeSwitcher";
-import MarkdownWorkspace from "./components/MarkdownWorkspace";
+import ThemeSwitcher from "@components/ThemeSwitcher";
+import MarkdownWorkspace from "@components/MarkdownWorkspace";
+import MarkdownToolbar from "@components/MarkdownToolbar";
+import { useEditor } from "@hooks/useEditor";
 import "./App.css"
 
 export default function App() {
+    const { insertMarkdown } = useEditor();
+
     return (
         <div className="w-full min-h-screen flex flex-col">
             {/* Barra superior POR HACER */}
             <header className="p-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-xl font-bold text-gray-900">
-                        Markdown Editor
-                    </h1>
-                    <ThemeSwitcher />
+                    <MarkdownToolbar onInsert={insertMarkdown} />
+                    <div className="flex items-center justify-end mb-2">
+                        <ThemeSwitcher />
+                    </div>
                 </div>
             </header>
             {/* Paneles */}

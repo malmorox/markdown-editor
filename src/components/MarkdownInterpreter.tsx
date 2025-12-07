@@ -2,15 +2,15 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
-import { useMarkdown } from "../hooks/useMarkdown";
-import { useTheme } from "../hooks/useTheme";
-import { getMarkdownComponents } from "../config/markdownComponents";
+import { useMarkdown } from "@hooks/useMarkdown";
+import { useTheme } from "@hooks/useTheme";
+import { getMarkdownComponents } from "@config/markdownComponents";
 
-
+// Interprete del código Markdown que viene del contexto (lo captura del editor). Muestra por pantalla la salida final con el tema seleccionado.
 const MarkdownInterpreter = () => {
     const { markdown } = useMarkdown();
     const { theme } = useTheme();
-
+    // Dependiendo si es claro u oscuro los componentes de salida del markdown seran de un color u otro, que se lo pasamos a la libreria que interpreta.
     const components = getMarkdownComponents(theme)
     const isDark = theme === "vs-dark";
 

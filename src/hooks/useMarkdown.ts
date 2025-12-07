@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { MarkdownContext } from "../contexts/MarkdownContext";
+import { MarkdownContext } from "@contexts/MarkdownContext";
 
 export function useMarkdown() {
     const context = useContext(MarkdownContext);
