@@ -8,8 +8,25 @@ const DownloadButton = () => {
     if (!hasContent) return null;
 
     const handleClick = () => {
-        console.log("hola")
+        handleDownload()        
     };
+
+    const handleDownload = () => {
+        // Crear un Blob con el contenido markdown
+        const blob = new Blob([markdown], { type: "text/markdown" });
+
+        // Crear una URL temporal
+        const url = URL.createObjectURL(blob);
+
+        // Crear un enlace temporal
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "documento.md";
+        a.click();
+
+        // Liberar memoria
+        URL.revokeObjectURL(url);
+    }
 
     return (
         <button
