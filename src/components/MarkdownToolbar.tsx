@@ -9,6 +9,8 @@ import { HiBold } from "react-icons/hi2";
 import { FaItalic } from "react-icons/fa";
 import { FaStrikethrough } from "react-icons/fa";
 import TableRowsColumnsSelector from '@components/ui/TableRowsColumnsSelector';
+import CodeLanguageSelector from '@components/ui/CodeLanguageSelector';
+
 
 interface MarkdownToolbarProps {
     onInsert: (markdown: string, cursorOffset?: number) => void;
@@ -18,9 +20,6 @@ interface DropdownProps {
     isOpen: boolean;
     children: React.ReactNode;
 }
-
-// Tamaño de los iconos 
-const iconSize = 28;
 
 const Dropdown = ({ isOpen, children }: DropdownProps) => {
     if (!isOpen) return null;
@@ -32,7 +31,10 @@ const Dropdown = ({ isOpen, children }: DropdownProps) => {
     );
 };
 
-const DropdownInputContent = ({ 
+// Tamaño de los iconos 
+const iconSize = 28;
+
+const InputContent = ({ 
     fields, 
     onSubmit, 
     buttonText = "Insertar" 
@@ -84,7 +86,7 @@ const DropdownInputContent = ({
     );
 };
 
-const DropdownHeadingContent = ({
+const HeadingContent = ({
     options,
     onSelect
 }: {
@@ -137,13 +139,6 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         { label: 'Título 6', markdown: '######', level: 6 },
     ];
 
-    // Configuración de lenguajes de código
-    const codeLanguages = [
-        'javascript', 'typescript', 'python', 'java', 'cpp', 'c', 'csharp',
-        'go', 'rust', 'php', 'ruby', 'swift', 'kotlin', 'html', 'css',
-        'sql', 'bash', 'json', 'yaml', 'markdown'
-    ];
-
     // Función para generar tablas
     const generateTable = (rows: number, cols: number) => {
         let table = '|';
@@ -191,12 +186,12 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         closeDropdown();
     };
 
-    const handleLinkInsert = (values: Record<string, string>) => {
+    /*const handleLinkInsert = (values: Record<string, string>) => {
         const text = values.text || 'texto del enlace';
         const url = values.url || 'https://ejemplo.com';
         onInsert(`[${text}](${url})`);
         closeDropdown();
-    };
+    };*/
 
     const handleImageInsert = (values: Record<string, string>) => {
         const alt = values.alt || 'descripción';
@@ -206,24 +201,24 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
     };
 
     const handleListInsert = (type: 'unordered' | 'ordered' | 'task') => {
-    let content = '';
+        let content = '';
 
-    switch (type) {
-        case 'unordered':
-            content = '- Elemento 1\n- Elemento 2\n- Elemento 3\n';
-            break;
+        switch (type) {
+            case 'unordered':
+                content = '- Elemento 1\n- Elemento 2\n- Elemento 3\n';
+                break;
 
-        case 'ordered':
-            content = '1. Elemento 1\n2. Elemento 2\n3. Elemento 3\n';
-            break;
+            case 'ordered':
+                content = '1. Elemento 1\n2. Elemento 2\n3. Elemento 3\n';
+                break;
 
-        case 'task':
-            content = '- [ ] Tarea 1\n- [ ] Tarea 2\n- [ ] Tarea 3\n';
-            break;
-    }
+            case 'task':
+                content = '- [ ] Tarea 1\n- [ ] Tarea 2\n- [ ] Tarea 3\n';
+                break;
+        }
 
-    onInsert(content);
-};
+        onInsert(content);
+    };
 
     const handleCodeBlockSelect = (language: string) => {
         onInsert(`\`\`\`${language}\n\n\`\`\`\n`, -4);
@@ -236,19 +231,22 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         closeDropdown();
     };
 
-    const handleDividerInsert = () => {
+    /*const handleDividerInsert = () => {
         onInsert('\n---\n');
         closeDropdown();
-    };
+    };*/
 
-    // Botones simples sin dropdown
+    // Botones del la barra de herramientas
     const toolbarButtons = [
         {
             icon: 'H',
             tooltip: 'Encabezado',
             name: 'heading',
             dropdownContent: (
-                
+                <HeadingContent 
+                    options={headingOptions}
+                    onSelect={handleHeadingSelect}
+                />
             )
         },
         {
@@ -277,7 +275,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             tooltip: 'Código inline',
             name: 'code',
             dropdownContent: (
-                <DropdownInputContent
+                <InputContent
                     fields={[
                         { name: 'code', label: 'Código', placeholder: 'const x = 10;' }
                     ]}
@@ -286,25 +284,31 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             )
         },
         {
-            icon: IoLinkOutline,
+            icon: 'e',
             tooltip: 'Enlace',
             name: 'link',
             hasDropdown: false,
-            onClick: () => handleListSelect()
-        },
-        {
-            icon: IoImageOutline,
-            tooltip: 'Imagen',
-            name: 'image',
-            content: (
-                <DropdownInputContent
+            content: 
+                <InputContent
                     fields={[
                         { name: 'alt', label: 'Texto alternativo', placeholder: 'Descripción' },
                         { name: 'url', label: 'URL de la imagen', placeholder: 'https://ejemplo.com/img.jpg' }
                     ]}
                     onSubmit={handleImageInsert}
                 />
-            )
+        },
+        {
+            icon: IoImageOutline,
+            tooltip: 'Imagen',
+            name: 'image',
+            content: 
+                <InputContent
+                    fields={[
+                        { name: 'alt', label: 'Texto alternativo', placeholder: 'Descripción' },
+                        { name: 'url', label: 'URL de la imagen', placeholder: 'https://ejemplo.com/img.jpg' }
+                    ]}
+                    onSubmit={handleImageInsert}
+                />
         },
         {
             icon: IoListOutline,
@@ -331,25 +335,15 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             icon: IoCodeSlash,
             tooltip: 'Bloque de código',
             name: 'codeblock',
-            dropdownContent: <CodeBlockContent languages={codeLanguages} onInsert={handleCodeBlockInsert} />
+            dropdownContent: (
+                <CodeLanguageSelector onSelect={handleCodeBlockSelect} />
+            )
         },
         {
             icon: '⊞',
             tooltip: 'Tabla',
             name: 'table',
             dropdownContent: <TableRowsColumnsSelector onSelect={handleTableSelect} />
-        },
-        {
-            icon: IoChatboxOutline,
-            tooltip: 'Cita',
-            name: 'quote',
-            dropdownContent: <QuoteContent onInsert={handleQuoteInsert} />
-        },
-        {
-            icon: IoRemoveOutline,
-            tooltip: 'Línea horizontal',
-            name: 'divider',
-            dropdownContent: <DividerContent onInsert={handleDividerInsert} />
         },
     ];
 
