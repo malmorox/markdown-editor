@@ -1,5 +1,5 @@
 import type { Components } from "react-markdown";
-import type { MonacoTheme } from "@types/monaco";
+import type { MonacoTheme } from "@/types/monaco";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
 

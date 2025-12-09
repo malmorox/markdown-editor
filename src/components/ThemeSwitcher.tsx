@@ -1,5 +1,5 @@
 import { useTheme } from "@hooks/useTheme";
-import type { MonacoTheme } from "@types/monaco";
+import type { MonacoTheme } from "@/types/monaco";
 
 export default function ThemeSwitcher() {
     const { theme, setTheme } = useTheme();

@@ -5,11 +5,13 @@ import {
     IoImageOutline, 
     IoListOutline,
 } from 'react-icons/io5';
+import type { ToolbarButton } from '@/types/toolbar';
 import { HiBold } from "react-icons/hi2";
 import { FaItalic } from "react-icons/fa";
 import { FaStrikethrough } from "react-icons/fa";
 import TableRowsColumnsSelector from '@components/ui/TableRowsColumnsSelector';
 import CodeLanguageSelector from '@components/ui/CodeLanguageSelector';
+import { HeadingContent, InputContent } from '@components/ui/ToolbarDropdownsContent';
 
 
 interface MarkdownToolbarProps {
@@ -33,78 +35,6 @@ const Dropdown = ({ isOpen, children }: DropdownProps) => {
 
 // Tamaño de los iconos 
 const iconSize = 28;
-
-const InputContent = ({ 
-    fields, 
-    onSubmit, 
-    buttonText = "Insertar" 
-}: { 
-    fields: { name: string; label: string; placeholder: string; defaultValue?: string }[];
-    onSubmit: (values: Record<string, string>) => void;
-    buttonText?: string;
-}) => {
-    const [values, setValues] = useState<Record<string, string>>({});
-
-    const handleChange = (name: string, value: string) => {
-        setValues(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmitClick = () => {
-        const finalValues: Record<string, string> = {};
-        fields.forEach(field => {
-            finalValues[field.name] = values[field.name] || field.defaultValue || '';
-        });
-        onSubmit(finalValues);
-        setValues({});
-    };
-
-    return (
-        <div className="p-3 min-w-[250px]">
-            <div className="space-y-2">
-                {fields.map(field => (
-                    <div key={field.name}>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                            {field.label}
-                        </label>
-                        <input
-                            type="text"
-                            value={values[field.name] || ''}
-                            onChange={(e) => handleChange(field.name, e.target.value)}
-                            placeholder={field.placeholder}
-                            className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                ))}
-                <button
-                    onClick={handleSubmitClick}
-                    className="w-full bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700 transition-colors mt-3"
-                >
-                    {buttonText}
-                </button>
-            </div>
-        </div>
-    );
-};
-
-const HeadingContent = ({
-    options,
-    onSelect
-}: {
-    options: { label: string; markdown: string; level: number }[];
-    onSelect: (markdown: string) => void;
-}) => (
-    <div className="p-2 min-w-[150px]">
-        {options.map((h) => (
-            <button
-                key={h.level}
-                className="w-full text-left px-3 py-1.5 text-sm hover:bg-gray-100 rounded"
-                onClick={() => onSelect(`{h.markdown} {h.label}`)}
-            >
-                {h.label}
-            </button>
-        ))}
-    </div>
-);
 
 const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -237,8 +167,9 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
     };*/
 
     // Botones del la barra de herramientas
-    const toolbarButtons = [
+    const toolbarButtons: ToolbarButton[] = [
         {
+            type: 'dropdown',
             icon: 'H',
             tooltip: 'Encabezado',
             name: 'heading',
@@ -250,27 +181,28 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             )
         },
         {
+            type: 'action',
             icon: HiBold,
             tooltip: 'Negrita',
             name: 'bold',
-            hasDropdown: false,
             onClick: () => handleBoldInsert()
         },
         {
+            type: 'action',
             icon: FaItalic,
             tooltip: 'Cursiva',
             name: 'italic',
-            hasDropdown: false,
             onClick: () => handleItalicInsert()
         },
         {
+            type: 'action',
             icon: FaStrikethrough,
             tooltip: 'Tachado',
             name: 'strikethrough',
-            hasDropdown: false,
             onClick: () => handleStrikethroughInsert()
         },
         {
+            type: 'dropdown',
             icon: IoCode,
             tooltip: 'Código inline',
             name: 'code',
@@ -284,62 +216,65 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             )
         },
         {
+            type: 'dropdown',
             icon: 'e',
             tooltip: 'Enlace',
             name: 'link',
-            hasDropdown: false,
-            content: 
-                <InputContent
-                    fields={[
-                        { name: 'alt', label: 'Texto alternativo', placeholder: 'Descripción' },
-                        { name: 'url', label: 'URL de la imagen', placeholder: 'https://ejemplo.com/img.jpg' }
-                    ]}
-                    onSubmit={handleImageInsert}
-                />
-        },
-        {
-            icon: IoImageOutline,
-            tooltip: 'Imagen',
-            name: 'image',
-            content: 
-                <InputContent
-                    fields={[
-                        { name: 'alt', label: 'Texto alternativo', placeholder: 'Descripción' },
-                        { name: 'url', label: 'URL de la imagen', placeholder: 'https://ejemplo.com/img.jpg' }
-                    ]}
-                    onSubmit={handleImageInsert}
-                />
-        },
-        {
-            icon: IoListOutline,
-            tooltip: 'Lista desordenada',
-            name: 'unordered-list',
-            hasDropdown: false,
-            onClick: () => handleListInsert('unordered')
-        },
-        {
-            icon: IoListOutline,
-            tooltip: 'Lista ordenada',
-            name: 'ordered-list',
-            hasDropdown: false,
-            onClick: () => handleListInsert('ordered')
-        },
-        {
-            icon: IoListOutline,
-            tooltip: 'Lista de tareas',
-            name: 'task-list',
-            hasDropdown: false,
-            onClick: () => handleListInsert('task')
-        },
-        {
-            icon: IoCodeSlash,
-            tooltip: 'Bloque de código',
-            name: 'codeblock',
             dropdownContent: (
-                <CodeLanguageSelector onSelect={handleCodeBlockSelect} />
+                <InputContent
+                    fields={[
+                        { name: 'alt', label: 'Texto alternativo', placeholder: 'Descripción' },
+                        { name: 'url', label: 'URL de la imagen', placeholder: 'https://ejemplo.com/img.jpg' }
+                    ]}
+                    onSubmit={handleImageInsert}
+                />
             )
         },
         {
+            type: 'dropdown',
+            icon: IoImageOutline,
+            tooltip: 'Imagen',
+            name: 'image',
+            dropdownContent:  (
+                <InputContent
+                    fields={[
+                        { name: 'alt', label: 'Texto alternativo', placeholder: 'Descripción' },
+                        { name: 'url', label: 'URL de la imagen', placeholder: 'https://ejemplo.com/img.jpg' }
+                    ]}
+                    onSubmit={handleImageInsert}
+                />
+            )
+        },
+        {
+            type: 'action',
+            icon: IoListOutline,
+            tooltip: 'Lista desordenada',
+            name: 'unordered-list',
+            onClick: () => handleListInsert('unordered')
+        },
+        {
+            type: 'action',
+            icon: IoListOutline,
+            tooltip: 'Lista ordenada',
+            name: 'ordered-list',
+            onClick: () => handleListInsert('ordered')
+        },
+        {
+            type: 'action',
+            icon: IoListOutline,
+            tooltip: 'Lista de tareas',
+            name: 'task-list',
+            onClick: () => handleListInsert('task')
+        },
+        {
+            type: 'dropdown',
+            icon: IoCodeSlash,
+            tooltip: 'Bloque de código',
+            name: 'codeblock',
+            dropdownContent: <CodeLanguageSelector onSelect={handleCodeBlockSelect} />
+        },
+        {
+            type: 'dropdown',
             icon: '⊞',
             tooltip: 'Tabla',
             name: 'table',
@@ -354,15 +289,23 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
                     <React.Fragment key={button.name}>
                         <div className="relative">
                             <button
-                                onClick={() => toggleDropdown(button.name)}
+                                onClick={() => {
+                                    if (button.type === 'action') {
+                                        button.onClick();
+                                    } else {
+                                        toggleDropdown(button.name);
+                                    }
+                                }}
                                 className="p-2 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
                                 title={button.tooltip}
                             >
                                 <button.icon size={iconSize} />
                             </button>
-                            <Dropdown isOpen={openDropdown === button.name}>
-                                {button.content}
-                            </Dropdown>
+                            {button.type === 'dropdown' && (
+                                <Dropdown isOpen={openDropdown === button.name}>
+                                    {button.dropdownContent}
+                                </Dropdown>
+                            )}
                         </div>
                         {/*{(index === 0 || index === 6 || index === 9) && (
                             <div className="w-px h-6 bg-gray-300 mx-1" />
