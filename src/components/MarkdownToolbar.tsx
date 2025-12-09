@@ -299,7 +299,10 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
                                 className="p-2 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
                                 title={button.tooltip}
                             >
-                                <button.icon size={iconSize} />
+                                {typeof button.icon === "string"
+                                    ? <span className="text-lg font-semibold">{button.icon}</span>
+                                    : <button.icon size={iconSize} />
+                                }
                             </button>
                             {button.type === 'dropdown' && (
                                 <Dropdown isOpen={openDropdown === button.name}>
