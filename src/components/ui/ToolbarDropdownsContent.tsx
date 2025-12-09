@@ -56,18 +56,29 @@ export const HeadingContent = ({
     options,
     onSelect
 }: {
-    options: { label: string; markdown: string; level: number }[];
+    options: { label: string; markdown: string; level: 1 | 2 | 3 | 4 | 5 | 6 }[];
     onSelect: (markdown: string) => void;
-}) => (
-    <div className="p-2 min-w-[150px]">
-        {options.map((h) => (
-            <button
-                key={h.level}
-                className="w-full text-left px-3 py-1.5 text-sm hover:bg-gray-100 rounded"
-                onClick={() => onSelect(`{h.markdown} {h.label}`)}
-            >
-                {h.label}
-            </button>
-        ))}
-    </div>
-);
+}) => {
+    const sizes = {
+        1: "text-2xl font-bold",
+        2: "text-xl font-bold",
+        3: "text-lg font-semibold",
+        4: "text-base font-medium",
+        5: "text-sm font-medium",
+        6: "text-xs font-medium"
+    };
+
+    return (
+        <div className="p-2 min-w-[150px] space-y-1">
+            {options.map((h) => (
+                <button
+                    key={h.level}
+                    className={`w-full text-left px-3 py-1.5 rounded hover:bg-gray-100 ${sizes[h.level]}`}
+                    onClick={() => onSelect(`${h.markdown} ${h.label}`)}
+                >
+                    {h.label}
+                </button>
+            ))}
+        </div>
+    );
+};

@@ -1,14 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-    IoCode, 
-    IoCodeSlash, 
-    IoImageOutline, 
-    IoListOutline,
-} from 'react-icons/io5';
+    FaTextHeight,
+    FaBold, 
+    FaItalic, 
+    FaStrikethrough, 
+    FaQuoteRight,
+    FaLink,
+    FaRegImage,
+    FaTable,
+    FaListUl,
+    FaListOl,
+    FaListCheck
+} from 'react-icons/fa6';
+import { IoCode } from "react-icons/io5";
+import { PiCodeBlockBold } from "react-icons/pi";
 import type { ToolbarButton } from '@/types/toolbar';
-import { HiBold } from "react-icons/hi2";
-import { FaItalic } from "react-icons/fa";
-import { FaStrikethrough } from "react-icons/fa";
 import TableRowsColumnsSelector from '@components/ui/TableRowsColumnsSelector';
 import CodeLanguageSelector from '@components/ui/CodeLanguageSelector';
 import { HeadingContent, InputContent } from '@components/ui/ToolbarDropdownsContent';
@@ -60,7 +66,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
     };
 
     // Configuración de encabezados
-    const headingOptions = [
+    const headingOptions: { label: string; markdown: string; level: 1 | 2 | 3 | 4 | 5 | 6 }[] = [
         { label: 'Título 1', markdown: '#', level: 1 },
         { label: 'Título 2', markdown: '##', level: 2 },
         { label: 'Título 3', markdown: '###', level: 3 },
@@ -170,7 +176,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
     const toolbarButtons: ToolbarButton[] = [
         {
             type: 'dropdown',
-            icon: 'H',
+            icon: FaTextHeight,
             tooltip: 'Encabezado',
             name: 'heading',
             dropdownContent: (
@@ -182,7 +188,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         },
         {
             type: 'action',
-            icon: HiBold,
+            icon: FaBold,
             tooltip: 'Negrita',
             name: 'bold',
             onClick: () => handleBoldInsert()
@@ -217,7 +223,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         },
         {
             type: 'dropdown',
-            icon: 'e',
+            icon: FaLink,
             tooltip: 'Enlace',
             name: 'link',
             dropdownContent: (
@@ -232,7 +238,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         },
         {
             type: 'dropdown',
-            icon: IoImageOutline,
+            icon: FaRegImage,
             tooltip: 'Imagen',
             name: 'image',
             dropdownContent:  (
@@ -247,35 +253,35 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         },
         {
             type: 'action',
-            icon: IoListOutline,
+            icon: FaListUl,
             tooltip: 'Lista desordenada',
             name: 'unordered-list',
             onClick: () => handleListInsert('unordered')
         },
         {
             type: 'action',
-            icon: IoListOutline,
+            icon: FaListOl,
             tooltip: 'Lista ordenada',
             name: 'ordered-list',
             onClick: () => handleListInsert('ordered')
         },
         {
             type: 'action',
-            icon: IoListOutline,
+            icon: FaListCheck,
             tooltip: 'Lista de tareas',
             name: 'task-list',
             onClick: () => handleListInsert('task')
         },
         {
             type: 'dropdown',
-            icon: IoCodeSlash,
+            icon: PiCodeBlockBold,
             tooltip: 'Bloque de código',
             name: 'codeblock',
             dropdownContent: <CodeLanguageSelector onSelect={handleCodeBlockSelect} />
         },
         {
             type: 'dropdown',
-            icon: '⊞',
+            icon: FaTable,
             tooltip: 'Tabla',
             name: 'table',
             dropdownContent: <TableRowsColumnsSelector onSelect={handleTableSelect} />
