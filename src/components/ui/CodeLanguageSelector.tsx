@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { SiPhp, SiTypescript, SiJavascript, SiMysql, SiNodedotjs } from "react-icons/si";
+import { FaHtml5, FaCss3Alt, FaJava, FaPython } from "react-icons/fa";
+import { TbBrandCSharp, TbBrandCpp } from "react-icons/tb";
 
 interface CodeLanguageSelectorProps {
     onSelect: (language: string) => void;
@@ -10,18 +13,18 @@ const CodeLanguageSelector = ({ onSelect }: CodeLanguageSelectorProps) => {
 
     // 12 lenguajes más comunes
     const popularLanguages = [
-        { name: 'JavaScript', value: 'javascript' },
-        { name: 'TypeScript', value: 'typescript' },
-        { name: 'Python', value: 'python' },
-        { name: 'Java', value: 'java' },
-        { name: 'C++', value: 'cpp' },
-        { name: 'C#', value: 'csharp' },
-        { name: 'HTML', value: 'html' },
-        { name: 'CSS', value: 'css' },
-        { name: 'SQL', value: 'sql' },
-        { name: 'Bash', value: 'bash' },
-        { name: 'JSON', value: 'json' },
-        { name: 'PHP', value: 'php' }
+        { name: 'JavaScript', value: 'javascript', icon: SiJavascript },
+        { name: 'TypeScript', value: 'typescript', icon: SiTypescript },
+        { name: 'Python', value: 'python', icon: FaPython },
+        { name: 'Java', value: 'java', icon: FaJava },
+        { name: 'C++', value: 'cpp', icon: TbBrandCpp },
+        { name: 'C#', value: 'csharp', icon: TbBrandCSharp },
+        { name: 'HTML', value: 'html', icon: FaHtml5 },
+        { name: 'CSS', value: 'css', icon: FaCss3Alt },
+        { name: 'SQL', value: 'sql', icon: SiMysql },
+        { name: 'Bash', value: 'bash', icon: SiNodedotjs },
+        { name: 'JSON', value: 'json', icon: SiNodedotjs },
+        { name: 'PHP', value: 'php', icon: SiPhp }
     ];
 
     const handleLanguageClick = (language: string) => {
@@ -77,20 +80,27 @@ const CodeLanguageSelector = ({ onSelect }: CodeLanguageSelectorProps) => {
     }
 
     return (
-        <div className="p-3 min-w-[280px]">
-            <div className="grid grid-cols-3 gap-2 mb-3">
-                {popularLanguages.map((lang) => (
-                    <button
-                        key={lang.value}
-                        onClick={() => handleLanguageClick(lang.value)}
-                        className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-blue-50 hover:border-blue-400 transition-all"
-                    >
-                        {lang.name}
-                    </button>
-                ))}
+        <div className="p-3 min-w-[200px]">
+            <div className="grid grid-cols-4 gap-2 mb-3">
+                {popularLanguages.map((lang) => {
+                    const Icon = lang.icon;
+                    return (
+                        <button
+                            key={lang.value}
+                            onClick={() => handleLanguageClick(lang.value)}
+                            className="aspect-square cursor-pointer flex items-center justify-center p-1 bg-white border border-gray-300 rounded hover:bg-gray-50 hover:border-gray-400 transition-all group"
+                            title={lang.name}
+                        >
+                            <Icon 
+                                size={20} 
+                                className="text-gray-700 group-hover:scale-110 transition-transform"
+                            />
+                        </button>
+                    );
+                })}
             </div>
             
-            <div className="pt-2 border-t border-gray-200">
+            <div className="pt-3 border-t border-gray-200">
                 <button
                     onClick={() => setShowCustomInput(true)}
                     className="w-full px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 transition-colors"

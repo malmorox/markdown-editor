@@ -7,18 +7,20 @@ import {
     FaQuoteRight,
     FaLink,
     FaRegImage,
-    FaTable,
     FaListUl,
     FaListOl,
-    FaListCheck
+    FaListCheck,
+    FaTable
 } from 'react-icons/fa6';
 import { IoCode } from "react-icons/io5";
 import { PiCodeBlockBold } from "react-icons/pi";
+import { MdInsertEmoticon } from "react-icons/md";
 import type { ToolbarButton } from '@/types/toolbar';
 import TableRowsColumnsSelector from '@components/ui/TableRowsColumnsSelector';
 import CodeLanguageSelector from '@components/ui/CodeLanguageSelector';
+import EmojiPicker from '@components/ui/EmojiPicker';
 import { HeadingContent, InputContent } from '@components/ui/ToolbarDropdownsContent';
-
+import ThemeSwitcher from "@components/ThemeSwitcher";
 
 interface MarkdownToolbarProps {
     onInsert: (markdown: string, cursorOffset?: number) => void;
@@ -38,9 +40,6 @@ const Dropdown = ({ isOpen, children }: DropdownProps) => {
         </div>
     );
 };
-
-// Tamaño de los iconos 
-const iconSize = 28;
 
 const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -116,23 +115,21 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         onInsert(`~${text}~`);
     };
 
-    const handleCodeInsert = (values: Record<string, string>) => {
-        const code = values.code || 'código';
-        onInsert(`\`${code}\``);
+    const handleQuoteInsert = () => {
+        const text = 'texto citado';
+        onInsert(`> ${text}`);
+    };
+
+    const handleCodeInsert = () => {
+        const text = 'enter code here';
+        onInsert(`\`${text}\``);
         closeDropdown();
     };
 
-    /*const handleLinkInsert = (values: Record<string, string>) => {
+    const handleLinkInsert = (values: Record<string, string>) => {
         const text = values.text || 'texto del enlace';
         const url = values.url || 'https://ejemplo.com';
         onInsert(`[${text}](${url})`);
-        closeDropdown();
-    };*/
-
-    const handleImageInsert = (values: Record<string, string>) => {
-        const alt = values.alt || 'descripción';
-        const url = values.url || 'https://ejemplo.com/imagen.jpg';
-        onInsert(`![${alt}](${url})`);
         closeDropdown();
     };
 
@@ -167,6 +164,17 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         closeDropdown();
     };
 
+    const handleImageInsert = (values: Record<string, string>) => {
+        const alt = values.alt || 'descripción';
+        const url = values.url || 'https://ejemplo.com/imagen.jpg';
+        onInsert(`![${alt}](${url})`);
+        closeDropdown();
+    };
+
+    const handleEmojiSelect = (emoji: string) => {
+        onInsert(emoji);
+    };
+
     /*const handleDividerInsert = () => {
         onInsert('\n---\n');
         closeDropdown();
@@ -177,6 +185,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         {
             type: 'dropdown',
             icon: FaTextHeight,
+            iconSize: 20,
             tooltip: 'Encabezado',
             name: 'heading',
             dropdownContent: (
@@ -189,6 +198,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         {
             type: 'action',
             icon: FaBold,
+            iconSize: 18,
             tooltip: 'Negrita',
             name: 'bold',
             onClick: () => handleBoldInsert()
@@ -196,6 +206,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         {
             type: 'action',
             icon: FaItalic,
+            iconSize: 18,
             tooltip: 'Cursiva',
             name: 'italic',
             onClick: () => handleItalicInsert()
@@ -203,42 +214,87 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         {
             type: 'action',
             icon: FaStrikethrough,
+            iconSize: 18,
             tooltip: 'Tachado',
             name: 'strikethrough',
             onClick: () => handleStrikethroughInsert()
         },
         {
-            type: 'dropdown',
+            type: 'action',
+            icon: FaQuoteRight,
+            iconSize: 18,
+            tooltip: 'Cita',
+            name: 'quote',
+            onClick: () => handleQuoteInsert()
+        },
+        {
+            type: 'action',
             icon: IoCode,
+            iconSize: 22,
             tooltip: 'Código inline',
             name: 'code',
-            dropdownContent: (
-                <InputContent
-                    fields={[
-                        { name: 'code', label: 'Código', placeholder: 'const x = 10;' }
-                    ]}
-                    onSubmit={handleCodeInsert}
-                />
-            )
+            onClick: () => handleCodeInsert()
         },
         {
             type: 'dropdown',
             icon: FaLink,
+            iconSize: 20,
             tooltip: 'Enlace',
             name: 'link',
             dropdownContent: (
                 <InputContent
                     fields={[
-                        { name: 'alt', label: 'Texto alternativo', placeholder: 'Descripción' },
-                        { name: 'url', label: 'URL de la imagen', placeholder: 'https://ejemplo.com/img.jpg' }
+                        { name: 'text', label: 'Texto del enlace', placeholder: 'Ej: Ir al sitio' },
+                        { name: 'url', label: 'URL del enlace', placeholder: 'https://ejemplo.com' }
                     ]}
-                    onSubmit={handleImageInsert}
+                    onSubmit={handleLinkInsert}
                 />
             )
         },
         {
+            type: 'action',
+            icon: FaListUl,
+            iconSize: 18,
+            tooltip: 'Lista desordenada',
+            name: 'unordered-list',
+            onClick: () => handleListInsert('unordered')
+        },
+        {
+            type: 'action',
+            icon: FaListOl,
+            iconSize: 18,
+            tooltip: 'Lista ordenada',
+            name: 'ordered-list',
+            onClick: () => handleListInsert('ordered')
+        },
+        {
+            type: 'action',
+            icon: FaListCheck,
+            iconSize: 18,
+            tooltip: 'Lista de tareas',
+            name: 'task-list',
+            onClick: () => handleListInsert('task')
+        },
+        {
+            type: 'dropdown',
+            icon: PiCodeBlockBold,
+            iconSize: 20,
+            tooltip: 'Bloque de código',
+            name: 'codeblock',
+            dropdownContent: <CodeLanguageSelector onSelect={handleCodeBlockSelect} />
+        },
+        {
+            type: 'dropdown',
+            icon: FaTable,
+            iconSize: 18,
+            tooltip: 'Tabla',
+            name: 'table',
+            dropdownContent: <TableRowsColumnsSelector onSelect={handleTableSelect} />
+        },
+        {
             type: 'dropdown',
             icon: FaRegImage,
+            iconSize: 18,
             tooltip: 'Imagen',
             name: 'image',
             dropdownContent:  (
@@ -252,75 +308,51 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             )
         },
         {
-            type: 'action',
-            icon: FaListUl,
-            tooltip: 'Lista desordenada',
-            name: 'unordered-list',
-            onClick: () => handleListInsert('unordered')
-        },
-        {
-            type: 'action',
-            icon: FaListOl,
-            tooltip: 'Lista ordenada',
-            name: 'ordered-list',
-            onClick: () => handleListInsert('ordered')
-        },
-        {
-            type: 'action',
-            icon: FaListCheck,
-            tooltip: 'Lista de tareas',
-            name: 'task-list',
-            onClick: () => handleListInsert('task')
-        },
-        {
             type: 'dropdown',
-            icon: PiCodeBlockBold,
-            tooltip: 'Bloque de código',
-            name: 'codeblock',
-            dropdownContent: <CodeLanguageSelector onSelect={handleCodeBlockSelect} />
-        },
-        {
-            type: 'dropdown',
-            icon: FaTable,
-            tooltip: 'Tabla',
-            name: 'table',
-            dropdownContent: <TableRowsColumnsSelector onSelect={handleTableSelect} />
-        },
+            icon: MdInsertEmoticon,
+            iconSize: 21,
+            tooltip: 'Emoticonos',
+            name: 'emoji',
+            dropdownContent: <EmojiPicker onSelect={handleEmojiSelect} />
+        }
     ];
 
     return (
-        <div className="border border-gray-300 rounded-lg bg-white p-2 mb-4" ref={dropdownRef}>
-            <div className="flex flex-wrap gap-1 items-center">
-                {toolbarButtons.map((button) => (
-                    <React.Fragment key={button.name}>
-                        <div className="relative">
-                            <button
-                                onClick={() => {
-                                    if (button.type === 'action') {
-                                        button.onClick();
-                                    } else {
-                                        toggleDropdown(button.name);
-                                    }
-                                }}
-                                className="p-2 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
-                                title={button.tooltip}
-                            >
-                                {typeof button.icon === "string"
-                                    ? <span className="text-lg font-semibold">{button.icon}</span>
-                                    : <button.icon size={iconSize} />
-                                }
-                            </button>
-                            {button.type === 'dropdown' && (
-                                <Dropdown isOpen={openDropdown === button.name}>
-                                    {button.dropdownContent}
-                                </Dropdown>
+        <div className="border border-gray-300 bg-white px-2 py-1" ref={dropdownRef}>
+            <div className="flex flex-wrap gap-1 items-center justify-between">
+                <div className="flex flex-wrap gap-1 items-center">
+                    {toolbarButtons.map((button, index) => (
+                        <React.Fragment key={button.name}>
+                            <div className="relative">
+                                <button
+                                    onClick={() => {
+                                        if (button.type === 'action') {
+                                            closeDropdown();
+                                            button.onClick();
+                                        } else {
+                                            toggleDropdown(button.name);
+                                        }
+                                    }}
+                                    className="p-2 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
+                                    title={button.tooltip}
+                                >
+                                    <button.icon size={button.iconSize} />
+                                </button>
+                                {button.type === 'dropdown' && (
+                                    <Dropdown isOpen={openDropdown === button.name}>
+                                        {button.dropdownContent}
+                                    </Dropdown>
+                                )}
+                            </div>
+                            {(index === 0 || index === 6 || index === 9) && (
+                                <div className="w-px h-6 bg-gray-300 mx-1" />
                             )}
-                        </div>
-                        {/*{(index === 0 || index === 6 || index === 9) && (
-                            <div className="w-px h-6 bg-gray-300 mx-1" />
-                        )}*/}
-                    </React.Fragment>
-                ))}
+                        </React.Fragment>
+                    ))}
+                </div>
+                <div className="flex items-center ml-auto">
+                    <ThemeSwitcher />
+                </div>
             </div>
         </div>
     );

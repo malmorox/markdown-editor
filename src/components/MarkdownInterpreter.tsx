@@ -18,7 +18,7 @@ const MarkdownInterpreter = () => {
         <div className={`w-full h-full overflow-auto ${
             isDark ? "bg-[#1e1e1e]" : "bg-white"
         }`}>
-            <div className="p-6 max-w-4xl mx-auto break-words overflow-wrap-anywhere">
+            <div className="p-6 max-w-4xl mx-auto wrap-break-word overflow-wrap-anywhere">
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkBreaks]}
                     rehypePlugins={[rehypeRaw]}

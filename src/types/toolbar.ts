@@ -1,10 +1,9 @@
 import type { IconType } from 'react-icons';
 
-export type ToolbarIcon = IconType | string;
-
 export type ActionButton = {
     type: 'action';
-    icon: ToolbarIcon;
+    icon: IconType;
+    iconSize: number;
     tooltip: string;
     name: string;
     onClick: () => void;
@@ -12,7 +11,8 @@ export type ActionButton = {
 
 export type DropdownButton = {
     type: 'dropdown';
-    icon: ToolbarIcon;
+    icon: IconType;
+    iconSize: number;
     tooltip: string;
     name: string;
     dropdownContent: React.ReactNode;
