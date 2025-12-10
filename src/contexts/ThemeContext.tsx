@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import type { MonacoTheme } from "@types/monaco";
+import type { MonacoTheme } from "@/types/monaco";
 
 type ThemeContextType = {
     theme: MonacoTheme;

@@ -69,11 +69,11 @@ export const HeadingContent = ({
     };
 
     return (
-        <div className="p-2 min-w-[150px] space-y-1">
+        <div className="p-2 min-w-[160px] space-y-1">
             {options.map((h) => (
                 <button
                     key={h.level}
-                    className={`w-full text-left px-3 py-1.5 rounded hover:bg-gray-100 ${sizes[h.level]}`}
+                    className={`w-full text-left px-3 py-1.5 rounded hover:bg-gray-100 ${sizes[h.level]} cursor-pointer`}
                     onClick={() => onSelect(`${h.markdown} ${h.label}`)}
                 >
                     {h.label}

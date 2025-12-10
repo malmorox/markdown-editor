@@ -40,7 +40,7 @@ const TableRowsColumnsSelector = ({
                 className="inline-block"
                 onMouseLeave={handleMouseLeave}
             >
-                <div className="grid gap-1 mb-3" style={{ gridTemplateColumns: `repeat(${maxCols}, 1fr)` }}>
+                <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${maxCols}, 1fr)` }}>
                     {Array.from({ length: maxRows }, (_, rowIndex) => (
                         Array.from({ length: maxCols }, (_, colIndex) => {
                             const row = rowIndex + 1;
@@ -65,7 +65,7 @@ const TableRowsColumnsSelector = ({
             </div>
 
             {isHovering && hoveredCell.row > 0 && hoveredCell.col > 0 && (
-                <div className="text-center text-sm text-gray-600 font-medium">
+                <div className="text-center text-sm text-gray-600 font-medium mt-3">
                     {hoveredCell.row} × {hoveredCell.col}
                 </div>
             )}

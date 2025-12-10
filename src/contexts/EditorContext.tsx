@@ -5,6 +5,8 @@ type EditorContextType = {
     editorInstance: editor.IStandaloneCodeEditor | null;
     setEditorInstance: (editor: editor.IStandaloneCodeEditor) => void;
     insertMarkdown: (text: string, offset?: number) => void;
+    undo: () => void;
+    redo: () => void;
 };
 
 export const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -33,8 +35,20 @@ export function EditorProvider({ children }: { children: React.ReactNode }) {
         editorInstance.focus();
     };
 
+    const undo = () => {
+        if (!editorInstance) return;
+        editorInstance.trigger('toolbar', 'undo', null);
+        editorInstance.focus();
+    };
+
+    const redo = () => {
+        if (!editorInstance) return;
+        editorInstance.trigger('toolbar', 'redo', null);
+        editorInstance.focus();
+    };
+
     return (
-        <EditorContext.Provider value={{ editorInstance, setEditorInstance, insertMarkdown }}>
+        <EditorContext.Provider value={{ editorInstance, setEditorInstance, insertMarkdown, undo, redo }}>
             {children}
         </EditorContext.Provider>
     );

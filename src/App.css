@@ -1,11 +1,10 @@
 @import "tailwindcss";
 
 body {
-    @apply bg-sky-950; 
+    @apply bg-[#1e1e1e]; 
 }
 
-
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0 0;
 }

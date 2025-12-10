@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { SiPhp, SiTypescript, SiJavascript, SiMysql, SiNodedotjs } from "react-icons/si";
+import { SiPhp, SiMysql, SiGnubash } from "react-icons/si";
 import { FaHtml5, FaCss3Alt, FaJava, FaPython } from "react-icons/fa";
 import { TbBrandCSharp, TbBrandCpp } from "react-icons/tb";
+import { BiLogoJavascript, BiLogoTypescript } from "react-icons/bi";
+import { BsFiletypeJson } from "react-icons/bs";
 
 interface CodeLanguageSelectorProps {
     onSelect: (language: string) => void;
@@ -13,8 +15,8 @@ const CodeLanguageSelector = ({ onSelect }: CodeLanguageSelectorProps) => {
 
     // 12 lenguajes más comunes
     const popularLanguages = [
-        { name: 'JavaScript', value: 'javascript', icon: SiJavascript },
-        { name: 'TypeScript', value: 'typescript', icon: SiTypescript },
+        { name: 'JavaScript', value: 'javascript', icon: BiLogoJavascript },
+        { name: 'TypeScript', value: 'typescript', icon: BiLogoTypescript },
         { name: 'Python', value: 'python', icon: FaPython },
         { name: 'Java', value: 'java', icon: FaJava },
         { name: 'C++', value: 'cpp', icon: TbBrandCpp },
@@ -22,8 +24,8 @@ const CodeLanguageSelector = ({ onSelect }: CodeLanguageSelectorProps) => {
         { name: 'HTML', value: 'html', icon: FaHtml5 },
         { name: 'CSS', value: 'css', icon: FaCss3Alt },
         { name: 'SQL', value: 'sql', icon: SiMysql },
-        { name: 'Bash', value: 'bash', icon: SiNodedotjs },
-        { name: 'JSON', value: 'json', icon: SiNodedotjs },
+        { name: 'Bash', value: 'bash', icon: SiGnubash },
+        { name: 'JSON', value: 'json', icon: BsFiletypeJson },
         { name: 'PHP', value: 'php', icon: SiPhp }
     ];
 

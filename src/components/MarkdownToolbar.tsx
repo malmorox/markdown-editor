@@ -9,18 +9,20 @@ import {
     FaRegImage,
     FaListUl,
     FaListOl,
-    FaListCheck,
-    FaTable
+    FaListCheck
 } from 'react-icons/fa6';
 import { IoCode } from "react-icons/io5";
 import { PiCodeBlockBold } from "react-icons/pi";
 import { MdInsertEmoticon } from "react-icons/md";
+import { BiTable } from "react-icons/bi";
+import { LuUndo, LuRedo } from "react-icons/lu";
 import type { ToolbarButton } from '@/types/toolbar';
 import TableRowsColumnsSelector from '@components/ui/TableRowsColumnsSelector';
 import CodeLanguageSelector from '@components/ui/CodeLanguageSelector';
 import EmojiPicker from '@components/ui/EmojiPicker';
 import { HeadingContent, InputContent } from '@components/ui/ToolbarDropdownsContent';
 import ThemeSwitcher from "@components/ThemeSwitcher";
+import { useEditor } from "@hooks/useEditor";
 
 interface MarkdownToolbarProps {
     onInsert: (markdown: string, cursorOffset?: number) => void;
@@ -44,6 +46,7 @@ const Dropdown = ({ isOpen, children }: DropdownProps) => {
 const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const { undo, redo } = useEditor();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -66,12 +69,12 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
 
     // Configuración de encabezados
     const headingOptions: { label: string; markdown: string; level: 1 | 2 | 3 | 4 | 5 | 6 }[] = [
-        { label: 'Título 1', markdown: '#', level: 1 },
-        { label: 'Título 2', markdown: '##', level: 2 },
-        { label: 'Título 3', markdown: '###', level: 3 },
-        { label: 'Título 4', markdown: '####', level: 4 },
-        { label: 'Título 5', markdown: '#####', level: 5 },
-        { label: 'Título 6', markdown: '######', level: 6 },
+        { label: 'Heading 1', markdown: '#', level: 1 },
+        { label: 'Heading 2', markdown: '##', level: 2 },
+        { label: 'Heading 3', markdown: '###', level: 3 },
+        { label: 'Heading 4', markdown: '####', level: 4 },
+        { label: 'Heading 5', markdown: '#####', level: 5 },
+        { label: 'Heading 6', markdown: '######', level: 6 },
     ];
 
     // Función para generar tablas
@@ -285,8 +288,8 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         },
         {
             type: 'dropdown',
-            icon: FaTable,
-            iconSize: 18,
+            icon: BiTable,
+            iconSize: 21,
             tooltip: 'Tabla',
             name: 'table',
             dropdownContent: <TableRowsColumnsSelector onSelect={handleTableSelect} />
@@ -318,41 +321,57 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
     ];
 
     return (
-        <div className="border border-gray-300 bg-white px-2 py-1" ref={dropdownRef}>
-            <div className="flex flex-wrap gap-1 items-center justify-between">
-                <div className="flex flex-wrap gap-1 items-center">
-                    {toolbarButtons.map((button, index) => (
-                        <React.Fragment key={button.name}>
-                            <div className="relative">
-                                <button
-                                    onClick={() => {
-                                        if (button.type === 'action') {
-                                            closeDropdown();
-                                            button.onClick();
-                                        } else {
-                                            toggleDropdown(button.name);
-                                        }
-                                    }}
-                                    className="p-2 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
-                                    title={button.tooltip}
-                                >
-                                    <button.icon size={button.iconSize} />
-                                </button>
-                                {button.type === 'dropdown' && (
-                                    <Dropdown isOpen={openDropdown === button.name}>
-                                        {button.dropdownContent}
-                                    </Dropdown>
-                                )}
-                            </div>
-                            {(index === 0 || index === 6 || index === 9) && (
-                                <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="bg-[#1e1e1e] px-2 py-1 flex flex-wrap gap-1 items-center justify-between" ref={dropdownRef}>
+            <nav className="flex flex-wrap gap-1 items-center">
+                <button
+                    onClick={undo}
+                    className="p-2 text-[#bbbbbb] hover:bg-[#4d4d4d] rounded transition-colors flex items-center justify-center cursor-pointer"
+                    title="Undo"
+                >
+                    <LuUndo size={24} />
+                </button>
+
+                <button
+                    onClick={redo}
+                    className="p-2 text-[#bbbbbb] hover:bg-[#4d4d4d] rounded transition-colors flex items-center justify-center cursor-pointer"
+                    title="Redo"
+                >
+                    <LuRedo size={24} />
+                </button>
+
+                <div className="w-px h-6 bg-[#4d4d4d] mx-1" />
+
+                {toolbarButtons.map((button, index) => (
+                    <React.Fragment key={button.name}>
+                        <div className="relative">
+                            <button
+                                onClick={() => {
+                                    if (button.type === 'action') {
+                                        closeDropdown();
+                                        button.onClick();
+                                    } else {
+                                        toggleDropdown(button.name);
+                                    }
+                                }}
+                                className="group p-2 hover:bg-[#4d4d4d] rounded transition-colors flex items-center justify-center cursor-pointer"
+                                title={button.tooltip}
+                            >
+                                <button.icon size={button.iconSize} className="text-[#bbbbbb] group-hover:text-white transition-colors" />
+                            </button>
+                            {button.type === 'dropdown' && (
+                                <Dropdown isOpen={openDropdown === button.name}>
+                                    {button.dropdownContent}
+                                </Dropdown>
                             )}
-                        </React.Fragment>
-                    ))}
-                </div>
-                <div className="flex items-center ml-auto">
-                    <ThemeSwitcher />
-                </div>
+                        </div>
+                        {(index === 6 || index === 9) && (
+                            <div className="w-px h-6 bg-[#4d4d4d] mx-1" />
+                        )}
+                    </React.Fragment>
+                ))}
+            </nav>
+            <div className="flex items-center ml-auto">
+                <ThemeSwitcher />
             </div>
         </div>
     );

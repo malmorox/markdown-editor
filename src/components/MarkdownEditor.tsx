@@ -1,4 +1,4 @@
-import Editor from "@monaco-editor/react";
+import Editor, { type BeforeMount } from "@monaco-editor/react";
 import { useMarkdown } from "@hooks/useMarkdown";
 import { useTheme } from "@hooks/useTheme";
 import { useEditor } from "@hooks/useEditor";
@@ -10,6 +10,20 @@ const MarkdownEditor = () => {
     const { theme } = useTheme();
     const { setEditorInstance } = useEditor();
 
+    const handleEditorWillMount: BeforeMount = (monaco) => {
+        // tema oscuro personalizado con fondo más claro
+        monaco.editor.defineTheme('customDark', {
+            base: 'vs-dark',
+            inherit: true,
+            rules: [],
+            colors: {
+                'editor.background': '#2d2d30', // Fondo gris oscuro más claro
+                'editor.lineHighlightBackground': '#3e3e42', // Línea actual
+                'editorLineNumber.foreground': '#858585', // Números de línea
+            }
+        });
+    };
+
     const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
         setEditorInstance(editor);
     };
@@ -19,9 +33,10 @@ const MarkdownEditor = () => {
             <Editor
                 height="100%"
                 defaultLanguage="markdown"
-                theme={theme}
+                theme={theme === 'vs-dark' ? 'customDark' : theme}
                 value={markdown}
                 onChange={(v) => setMarkdown(v ?? "")}
+                beforeMount={handleEditorWillMount}
                 onMount={handleEditorDidMount}
                 options={{
                     lineNumbers: "on",
