@@ -23,6 +23,7 @@ import EmojiPicker from '@components/ui/EmojiPicker';
 import { HeadingContent, InputContent } from '@components/ui/ToolbarDropdownsContent';
 import ThemeSwitcher from "@components/ThemeSwitcher";
 import { useEditor } from "@hooks/useEditor";
+import { useMarkdownActions } from "@hooks/useMarkdownActions";
 
 interface MarkdownToolbarProps {
     onInsert: (markdown: string, cursorOffset?: number) => void;
@@ -46,6 +47,7 @@ const Dropdown = ({ isOpen, children }: DropdownProps) => {
 const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const actions = useMarkdownActions({ onInsert });
     const { undo, redo } = useEditor();
 
     useEffect(() => {
@@ -77,111 +79,31 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
         { label: 'Heading 6', markdown: '######', level: 6 },
     ];
 
-    // Función para generar tablas
-    const generateTable = (rows: number, cols: number) => {
-        let table = '|';
-        for (let i = 0; i < cols; i++) {
-            table += ` Columna ${i + 1} |`;
-        }
-        table += '\n|';
-        for (let i = 0; i < cols; i++) {
-            table += ' --------- |';
-        }
-        for (let i = 0; i < rows; i++) {
-            table += '\n|';
-            for (let j = 0; j < cols; j++) {
-                table += ` Celda ${i + 1}-${j + 1} |`;
-            }
-        }
-        table += '\n';
-        return table;
-    };
-
     // Manejadores
-    const handleHeadingSelect = (markdown: string) => {
-        onInsert(markdown);
-        closeDropdown();
-    };
-
-    const handleBoldInsert = () => {
-        const text = 'texto en negrita';
-        onInsert(`**${text}**`);
-    };
-
-    const handleItalicInsert = () => {
-        const text = 'texto en cursiva';
-        onInsert(`*${text}*`);
-    };
-
-    const handleStrikethroughInsert = () => {
-        const text = 'texto tachado';
-        onInsert(`~${text}~`);
-    };
-
-    const handleQuoteInsert = () => {
-        const text = 'texto citado';
-        onInsert(`> ${text}`);
-    };
-
-    const handleCodeInsert = () => {
-        const text = 'enter code here';
-        onInsert(`\`${text}\``);
+    const handleHeadingSelect = (level: 1 | 2 | 3 | 4 | 5 | 6, label: string) => {
+        actions.insertHeading(level, label);
         closeDropdown();
     };
 
     const handleLinkInsert = (values: Record<string, string>) => {
-        const text = values.text || 'texto del enlace';
-        const url = values.url || 'https://ejemplo.com';
-        onInsert(`[${text}](${url})`);
-        closeDropdown();
-    };
-
-    const handleListInsert = (type: 'unordered' | 'ordered' | 'task') => {
-        let content = '';
-
-        switch (type) {
-            case 'unordered':
-                content = '- Elemento 1\n- Elemento 2\n- Elemento 3\n';
-                break;
-
-            case 'ordered':
-                content = '1. Elemento 1\n2. Elemento 2\n3. Elemento 3\n';
-                break;
-
-            case 'task':
-                content = '- [ ] Tarea 1\n- [ ] Tarea 2\n- [ ] Tarea 3\n';
-                break;
-        }
-
-        onInsert(content);
-    };
-
-    const handleCodeBlockSelect = (language: string) => {
-        onInsert(`\`\`\`${language}\n\n\`\`\`\n`, -4);
-        closeDropdown();
-    };
-
-    const handleTableSelect = (selection: { rows: number; cols: number }) => {
-        const table = generateTable(selection.rows, selection.cols);
-        onInsert(table);
+        actions.insertLink(values.text, values.url);
         closeDropdown();
     };
 
     const handleImageInsert = (values: Record<string, string>) => {
-        const alt = values.alt || 'descripción';
-        const url = values.url || 'https://ejemplo.com/imagen.jpg';
-        onInsert(`![${alt}](${url})`);
+        actions.insertImage(values.alt, values.url);
         closeDropdown();
     };
 
-    const handleEmojiSelect = (emoji: string) => {
-        onInsert(emoji);
+    const handleCodeBlockSelect = (language: string) => {
+        actions.insertCodeBlock(language);
+        closeDropdown();
     };
 
-    /*const handleDividerInsert = () => {
-        onInsert('\n---\n');
+    const handleTableSelect = (selection: { rows: number; cols: number }) => {
+        actions.insertTable(selection.rows, selection.cols);
         closeDropdown();
-    };*/
+    };
 
     // Botones del la barra de herramientas
     const toolbarButtons: ToolbarButton[] = [
@@ -204,7 +126,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             iconSize: 18,
             tooltip: 'Negrita',
             name: 'bold',
-            onClick: () => handleBoldInsert()
+            onClick: () => actions.insertBold()
         },
         {
             type: 'action',
@@ -212,7 +134,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             iconSize: 18,
             tooltip: 'Cursiva',
             name: 'italic',
-            onClick: () => handleItalicInsert()
+            onClick: () => actions.insertItalic()
         },
         {
             type: 'action',
@@ -220,7 +142,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             iconSize: 18,
             tooltip: 'Tachado',
             name: 'strikethrough',
-            onClick: () => handleStrikethroughInsert()
+            onClick: () => actions.insertStrikethrough()
         },
         {
             type: 'action',
@@ -228,7 +150,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             iconSize: 18,
             tooltip: 'Cita',
             name: 'quote',
-            onClick: () => handleQuoteInsert()
+            onClick: () => actions.insertQuote()
         },
         {
             type: 'action',
@@ -236,7 +158,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             iconSize: 22,
             tooltip: 'Código inline',
             name: 'code',
-            onClick: () => handleCodeInsert()
+            onClick: () => actions.insertCode()
         },
         {
             type: 'dropdown',
@@ -260,7 +182,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             iconSize: 18,
             tooltip: 'Lista desordenada',
             name: 'unordered-list',
-            onClick: () => handleListInsert('unordered')
+            onClick: () => actions.insertUnorderedList()
         },
         {
             type: 'action',
@@ -268,7 +190,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             iconSize: 18,
             tooltip: 'Lista ordenada',
             name: 'ordered-list',
-            onClick: () => handleListInsert('ordered')
+            onClick: () => actions.insertOrderedList()
         },
         {
             type: 'action',
@@ -276,7 +198,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             iconSize: 18,
             tooltip: 'Lista de tareas',
             name: 'task-list',
-            onClick: () => handleListInsert('task')
+            onClick: () => actions.insertTaskList()
         },
         {
             type: 'dropdown',
@@ -316,7 +238,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
             iconSize: 21,
             tooltip: 'Emoticonos',
             name: 'emoji',
-            dropdownContent: <EmojiPicker onSelect={handleEmojiSelect} />
+            dropdownContent: <EmojiPicker onSelect={actions.insertEmoji} />
         }
     ];
 

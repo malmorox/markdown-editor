@@ -4,10 +4,12 @@ import MarkdownToolbar from "@components/MarkdownToolbar";
 import DownloadButton from "@components/DownloadButton";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useEditor } from "@hooks/useEditor";
+import { useTheme } from "@hooks/useTheme";
 
 // Espacio de trabajo dividido en 2 paneles, el editor de Markdown y el intérprete que muestra su salida. Los paneles son redimensionables (de la libreria 'react-resizable-panels'), para dar libertad al usuario a la hora de trabajar.
 const MarkdownWorkspace = () => {
     const { insertMarkdown } = useEditor();
+    const { theme } = useTheme();
 
     return (
         <div className="flex flex-col h-full">
@@ -22,7 +24,11 @@ const MarkdownWorkspace = () => {
                     </Panel>
 
                     {/* Barra de redimensión */}
-                    <PanelResizeHandle className="w-2 bg-gray-700 hover:bg-gray-500 cursor-col-resize" />
+                    <PanelResizeHandle className={`w-2 cursor-col-resize ${
+                            theme === "vs-dark"
+                                ? "bg-[#252526] hover:bg-[#212122]"
+                                : "bg-[#d4d4d4] hover:bg-[#c8c8c8]"}`}
+                    />
 
                     {/* INTÉRPRETE */}
                     <Panel defaultSize={50} minSize={20}>

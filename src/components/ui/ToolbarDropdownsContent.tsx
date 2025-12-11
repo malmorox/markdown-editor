@@ -57,7 +57,7 @@ export const HeadingContent = ({
     onSelect
 }: {
     options: { label: string; markdown: string; level: 1 | 2 | 3 | 4 | 5 | 6 }[];
-    onSelect: (markdown: string) => void;
+    onSelect: (level: 1 | 2 | 3 | 4 | 5 | 6, label: string) => void;
 }) => {
     const sizes = {
         1: "text-2xl font-bold",
@@ -74,7 +74,7 @@ export const HeadingContent = ({
                 <button
                     key={h.level}
                     className={`w-full text-left px-3 py-1.5 rounded hover:bg-gray-100 ${sizes[h.level]} cursor-pointer`}
-                    onClick={() => onSelect(`${h.markdown} ${h.label}`)}
+                    onClick={() => onSelect(h.level, h.label)}
                 >
                     {h.label}
                 </button>
