@@ -73,7 +73,7 @@ export const HeadingContent = ({
             {options.map((h) => (
                 <button
                     key={h.level}
-                    className={`w-full text-left text-[#cccccc] px-3 py-1.5 rounded hover:bg-gray-100 ${sizes[h.level]} cursor-pointer`}
+                    className={`w-full text-left text-[#cccccc] px-3 py-1.5 rounded hover:bg-[#3e3e42] ${sizes[h.level]} cursor-pointer`}
                     onClick={() => onSelect(h.level, h.label)}
                 >
                     {h.label}

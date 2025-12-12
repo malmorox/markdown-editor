@@ -72,7 +72,7 @@ const CodeLanguageSelector = ({ onSelect }: CodeLanguageSelectorProps) => {
                             setShowCustomInput(false);
                             setCustomLanguage('');
                         }}
-                        className="flex-1 bg-[#cccccc] text-gray-700 px-3 py-2 rounded text-sm hover:bg-[#bbbbbb] transition-colors cursor-pointer"
+                        className="flex-1 bg-[#cccccc] text-[#1e1e1e] px-3 py-2 rounded text-sm hover:bg-[#A8A8A8] transition-colors cursor-pointer"
                     >
                         Cancelar
                     </button>
