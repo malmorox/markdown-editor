@@ -17,21 +17,30 @@ export function EditorProvider({ children }: { children: React.ReactNode }) {
     const insertMarkdown = (text: string, cursorOffset: number = 0) => {
         if (!editorInstance) return;
 
+        const model = editorInstance.getModel();
         const selection = editorInstance.getSelection();
-        if (!selection) return;
+        if (!model || !selection) return;
 
-        const position = selection.getStartPosition();
-        
-        editorInstance.executeEdits('toolbar', [{
+        const eol = model.getEOL();
+        const normalizedText = text.replace(/\r?\n/g, eol);
+
+        const startOffset = model.getOffsetAt(selection.getStartPosition());
+
+        editorInstance.pushUndoStop();
+        editorInstance.executeEdits("toolbar", [
+            {
             range: selection,
-            text: text,
-            forceMoveMarkers: true
-        }]);
+            text: normalizedText,
+            forceMoveMarkers: true,
+            },
+        ]);
+        editorInstance.pushUndoStop();
 
-        const lineNumber = position.lineNumber;
-        const column = position.column + text.length + cursorOffset;
-        
-        editorInstance.setPosition({ lineNumber, column });
+        const targetOffset = startOffset + normalizedText.length + cursorOffset;
+        const targetPos = model.getPositionAt(Math.max(0, targetOffset));
+
+        editorInstance.setPosition(targetPos);
+        editorInstance.revealPositionInCenter(targetPos);
         editorInstance.focus();
     };
 

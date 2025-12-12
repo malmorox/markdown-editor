@@ -21,7 +21,7 @@ export const useMarkdownActions = ({ onInsert }: MarkdownActionsProps) => {
                 table += ` Celda ${i + 1}-${j + 1} |`;
             }
         }
-        table += '\n';
+        //table += '\n';
         return table;
     }, []);
 
@@ -32,17 +32,17 @@ export const useMarkdownActions = ({ onInsert }: MarkdownActionsProps) => {
 
     const insertBold = useCallback(() => {
         const text = 'texto en negrita';
-        onInsert(`**${text}**`);
+        onInsert(`**${text}**`, -2);
     }, [onInsert]);
 
     const insertItalic = useCallback(() => {
         const text = 'texto en cursiva';
-        onInsert(`*${text}*`);
+        onInsert(`*${text}*`, -1);
     }, [onInsert]);
 
     const insertStrikethrough = useCallback(() => {
         const text = 'texto tachado';
-        onInsert(`~${text}~`);
+        onInsert(`~${text}~`, -1);
     }, [onInsert]);
 
     const insertQuote = useCallback(() => {
@@ -52,7 +52,7 @@ export const useMarkdownActions = ({ onInsert }: MarkdownActionsProps) => {
 
     const insertCode = useCallback(() => {
         const text = 'enter code here';
-        onInsert(`\`${text}\``);
+        onInsert(`\`${text}\``, -1);
     }, [onInsert]);
 
     const insertLink = useCallback((text?: string, url?: string) => {
@@ -69,23 +69,23 @@ export const useMarkdownActions = ({ onInsert }: MarkdownActionsProps) => {
 
     // Listas
     const insertUnorderedList = useCallback(() => {
-        const content = '- Elemento 1\n- Elemento 2\n- Elemento 3\n';
+        const content = '- Elemento 1\n- Elemento 2\n- Elemento 3';
         onInsert(content);
     }, [onInsert]);
 
     const insertOrderedList = useCallback(() => {
-        const content = '1. Elemento 1\n2. Elemento 2\n3. Elemento 3\n';
+        const content = '1. Elemento 1\n2. Elemento 2\n3. Elemento 3';
         onInsert(content);
     }, [onInsert]);
 
     const insertTaskList = useCallback(() => {
-        const content = '- [ ] Tarea 1\n- [ ] Tarea 2\n- [ ] Tarea 3\n';
+        const content = '- [x] Tarea 1\n- [x] Tarea 2\n- [ ] Tarea 3';
         onInsert(content);
     }, [onInsert]);
 
     // Bloques de código
     const insertCodeBlock = useCallback((language: string = 'javascript') => {
-        onInsert(`\`\`\`${language}\n\n\`\`\`\n`, -4);
+        onInsert(`\`\`\`${language}\n\n\`\`\``, -4);
     }, [onInsert]);
 
     // Tabla
@@ -100,9 +100,9 @@ export const useMarkdownActions = ({ onInsert }: MarkdownActionsProps) => {
     }, [onInsert]);
 
     // Divisor
-    const insertDivider = useCallback(() => {
+    /*const insertDivider = useCallback(() => {
         onInsert('\n---\n');
-    }, [onInsert]);
+    }, [onInsert]);*/
 
     return {
         // Formato de texto
@@ -128,6 +128,6 @@ export const useMarkdownActions = ({ onInsert }: MarkdownActionsProps) => {
         
         // Otros
         insertEmoji,
-        insertDivider,
+        //insertDivider,
     };
 };

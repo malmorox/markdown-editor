@@ -1,7 +1,6 @@
 import MarkdownEditor from "@components/MarkdownEditor";
 import MarkdownInterpreter from "@components/MarkdownInterpreter";
 import MarkdownToolbar from "@components/MarkdownToolbar";
-import DownloadButton from "@components/DownloadButton";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useEditor } from "@hooks/useEditor";
 import { useTheme } from "@hooks/useTheme";
@@ -32,12 +31,8 @@ const MarkdownWorkspace = () => {
 
                     {/* INTÉRPRETE */}
                     <Panel defaultSize={50} minSize={20}>
-                        <div className="w-full h-full relative">
+                        <div className="w-full h-full">
                             <MarkdownInterpreter />
-
-                            <div className="absolute bottom-8 right-8">
-                                <DownloadButton />
-                            </div>
                         </div>
                     </Panel>
                 </PanelGroup>
