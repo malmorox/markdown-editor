@@ -52,8 +52,8 @@ const TableRowsColumnsSelector = ({
                                     key={`${row}-${col}`}
                                     className={`w-6 h-6 border-2 rounded transition-all duration-100 cursor-pointer ${
                                         active
-                                            ? 'bg-blue-500 border-blue-600'
-                                            : 'bg-white border-gray-300 hover:border-blue-400'
+                                            ? 'bg-sky-400 border-sky-600'
+                                            : 'bg-white border-[#cccccc] hover:border-sky-400'
                                     }`}
                                     onMouseEnter={() => handleMouseEnter(row, col)}
                                     onClick={handleClick}
@@ -65,7 +65,7 @@ const TableRowsColumnsSelector = ({
             </div>
 
             {isHovering && hoveredCell.row > 0 && hoveredCell.col > 0 && (
-                <div className="text-center text-sm text-gray-600 font-medium mt-3">
+                <div className="text-center text-sm text-[#cccccc] font-medium mt-3">
                     {hoveredCell.row} × {hoveredCell.col}
                 </div>
             )}

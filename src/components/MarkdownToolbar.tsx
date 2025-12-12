@@ -38,7 +38,7 @@ const Dropdown = ({ isOpen, children }: DropdownProps) => {
     if (!isOpen) return null;
     
     return (
-        <div className="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+        <div className="absolute top-full left-0 mt-3 bg-[#252526] border border-[#bbbbbb] rounded-lg shadow-lg z-10">
             {children}
         </div>
     );
@@ -244,10 +244,10 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
 
     return (
         <div className="bg-[#1e1e1e] px-2 py-1 flex flex-wrap gap-1 items-center justify-between" ref={dropdownRef}>
-            <nav className="flex flex-wrap gap-1 items-center">
+            <nav className="flex flex-wrap gap-0.5 items-center">
                 <button
                     onClick={undo}
-                    className="p-2 text-[#bbbbbb] hover:bg-[#4d4d4d] rounded transition-colors flex items-center justify-center cursor-pointer"
+                    className="w-10 aspect-square p-2 text-[#bbbbbb] hover:bg-[#4d4d4d] rounded transition-colors flex items-center justify-center cursor-pointer"
                     title="Undo"
                 >
                     <LuUndo size={24} />
@@ -255,7 +255,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
 
                 <button
                     onClick={redo}
-                    className="p-2 text-[#bbbbbb] hover:bg-[#4d4d4d] rounded transition-colors flex items-center justify-center cursor-pointer"
+                    className="w-10 aspect-square p-2 text-[#bbbbbb] hover:bg-[#4d4d4d] rounded transition-colors flex items-center justify-center cursor-pointer"
                     title="Redo"
                 >
                     <LuRedo size={24} />
@@ -275,7 +275,7 @@ const MarkdownToolbar = ({ onInsert }: MarkdownToolbarProps) => {
                                         toggleDropdown(button.name);
                                     }
                                 }}
-                                className="group p-2 hover:bg-[#4d4d4d] rounded transition-colors flex items-center justify-center cursor-pointer"
+                                className="w-10 aspect-square group p-2 hover:bg-[#4d4d4d] rounded transition-colors flex items-center justify-center cursor-pointer"
                                 title={button.tooltip}
                             >
                                 <button.icon size={button.iconSize} className="text-[#bbbbbb] group-hover:text-white transition-colors" />

@@ -29,7 +29,7 @@ export const InputContent = ({
             <div className="space-y-2">
                 {fields.map(field => (
                     <div key={field.name}>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-[#cccccc] mb-1">
                             {field.label}
                         </label>
                         <input
@@ -37,13 +37,13 @@ export const InputContent = ({
                             value={values[field.name] || ''}
                             onChange={(e) => handleChange(field.name, e.target.value)}
                             placeholder={field.placeholder}
-                            className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-2 py-1.5 text-sm text-[#1e1e1e] bg-white border border-[#cccccc] rounded focus:outline-none focus:ring-2 focus:ring-sky-500"
                         />
                     </div>
                 ))}
                 <button
                     onClick={handleSubmitClick}
-                    className="w-full bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700 transition-colors mt-3"
+                    className="w-full bg-sky-500 text-white px-3 py-1.5 rounded text-sm hover:bg-sky-600 transition-colors mt-2 cursor-pointer"
                 >
                     {buttonText}
                 </button>
@@ -73,7 +73,7 @@ export const HeadingContent = ({
             {options.map((h) => (
                 <button
                     key={h.level}
-                    className={`w-full text-left px-3 py-1.5 rounded hover:bg-gray-100 ${sizes[h.level]} cursor-pointer`}
+                    className={`w-full text-left text-[#cccccc] px-3 py-1.5 rounded hover:bg-gray-100 ${sizes[h.level]} cursor-pointer`}
                     onClick={() => onSelect(h.level, h.label)}
                 >
                     {h.label}
