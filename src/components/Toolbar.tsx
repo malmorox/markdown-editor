@@ -11,7 +11,8 @@ import {
     FaListUl,
     FaListOl,
     FaListCheck,
-    FaTrash
+    FaTrash,
+    FaFolder
 } from 'react-icons/fa6';
 import { IoCode } from "react-icons/io5";
 import { PiCodeBlockBold } from "react-icons/pi";
@@ -35,6 +36,8 @@ interface MarkdownToolbarProps {
     onInsert: (markdown: string, cursorOffset?: number) => void;
     onSidebarToggle: () => void;
     isSidebarOpen: boolean;
+    onExplorerToggle: () => void;
+    isExplorerOpen: boolean;
 }
 
 interface DropdownProps {
@@ -52,7 +55,7 @@ const Dropdown = ({ isOpen, children }: DropdownProps) => {
     );
 };
 
-const Toolbar = ({ onInsert, onSidebarToggle, isSidebarOpen }: MarkdownToolbarProps) => {
+const Toolbar = ({ onInsert, onSidebarToggle, isSidebarOpen, onExplorerToggle, isExplorerOpen }: MarkdownToolbarProps) => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const actions = useMarkdownActions({ onInsert });
@@ -253,6 +256,20 @@ const Toolbar = ({ onInsert, onSidebarToggle, isSidebarOpen }: MarkdownToolbarPr
     return (
         <>
             <div className="bg-[#1e1e1e] px-2 py-1 flex gap-1 items-center justify-between" ref={dropdownRef}>
+                <button
+                    onClick={onExplorerToggle}
+                    className={`
+                        w-10 aspect-square p-2 rounded transition-colors
+                        flex items-center justify-center cursor-pointer
+                        ${isExplorerOpen
+                            ? 'bg-[#4d4d4d] text-white'
+                            : 'text-[#bbbbbb] hover:bg-[#4d4d4d]'
+                        }
+                    `}
+                    title="Toggle explorer"
+                >
+                    <FaFolder size={20} />
+                </button>
                 {isEditorVisible && (
                     <nav className="flex gap-0.5 items-center">
                         <button
