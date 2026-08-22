@@ -1,19 +1,29 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { useMarkdown } from "@hooks/useMarkdown";
 import { useTheme } from "@hooks/useTheme";
 import { useEditor } from "@hooks/useEditor";
 import { useSettings } from "@hooks/useSettings";
 import { useScrollSync } from "@hooks/useScrollSync";
+import { useActiveFile } from "@hooks/files/useActiveFile";
+import { db } from "@/lib/db";
+import { debounce } from "@utils/debounce";
 import type { editor } from 'monaco-editor';
+import { persistFileToDb } from "@utils/persistFile";
 
 // Editor de Markdown con Monaco que sincroniza el contenido y aplica el tema seleccionado.
 const MarkdownEditor = () => {
     const { markdown, setMarkdown } = useMarkdown();
     const { theme } = useTheme();
-    const { setEditorInstance } = useEditor();
+    const { setEditorInstance, loadFileModel, editorInstance } = useEditor();
     const { settings } = useSettings();
     const { setEditorScroll, onEditorScroll } = useScrollSync();
+    const { activeFileId } = useActiveFile();
+
+    const persistFile = useMemo(
+        () => debounce(persistFileToDb, 400),
+        []
+    );
 
     const handleEditorWillMount: BeforeMount = (monaco) => {
         // tema oscuro personalizado con fondo más claro
@@ -30,7 +40,7 @@ const MarkdownEditor = () => {
     };
 
     const handleEditorDidMount: OnMount = (editor, monaco) => {
-        setEditorInstance(editor);
+        setEditorInstance(editor, monaco);
 
         let isSyncing = false;
 
@@ -88,6 +98,20 @@ const MarkdownEditor = () => {
         });
     };
 
+    useEffect(() => {
+        if (!activeFileId || !editorInstance) return;
+
+        let cancelled = false;
+        (async () => {
+            const file = await db.files.get(activeFileId);
+            if (cancelled) return;
+            loadFileModel(activeFileId, file?.content ?? '');
+            setMarkdown(file?.content ?? '');
+        })();
+
+        return () => { cancelled = true; };
+    }, [activeFileId, editorInstance, loadFileModel, setMarkdown]);
+
     const editorOptions = useMemo((): editor.IStandaloneEditorConstructionOptions => ({
         lineNumbers: settings.editor.lineNumbers ? "on" : "off",
         wordWrap: settings.editor.wordWrap ? "on" : "off",
@@ -105,7 +129,10 @@ const MarkdownEditor = () => {
                 defaultLanguage="markdown"
                 theme={theme === 'vs-dark' ? 'customDark' : theme}
                 defaultValue={markdown}
-                onChange={(v) => setMarkdown(v ?? "")}
+                onChange={(v) => {
+                    setMarkdown(v ?? "");
+                    if (activeFileId) persistFile(activeFileId, v ?? "");
+                }}
                 beforeMount={handleEditorWillMount}
                 onMount={handleEditorDidMount}
                 options={editorOptions}
