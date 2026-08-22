@@ -9,15 +9,12 @@ const DesktopLayout = () => {
     const { insertMarkdown } = useEditor();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isFileExplorerOpen, setFileExplorerOpen] = useState(true);
-    const [activeFileId, setActiveFileId] = useState<string | null>(null);
 
     return (
         <div className="w-screen h-screen flex overflow-hidden">
             <FileExplorer
                 isOpen={isFileExplorerOpen}
                 onClose={() => setFileExplorerOpen(false)}
-                activeFileId={activeFileId}
-                onSelectFile={setActiveFileId}
             />
             <div className="flex-1 min-w-0 h-full flex flex-col">
                 {/* Toolbar */}

@@ -255,7 +255,7 @@ const Toolbar = ({ onInsert, onSidebarToggle, isSidebarOpen, onExplorerToggle, i
 
     return (
         <>
-            <div className="bg-[#1e1e1e] px-2 py-1 flex gap-1 items-center justify-between" ref={dropdownRef}>
+            <div className="bg-[#1e1e1e] px-1 py-1 flex gap-2 items-center justify-between" ref={dropdownRef}>
                 <button
                     onClick={onExplorerToggle}
                     className={`

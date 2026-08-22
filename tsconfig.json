@@ -12,8 +12,10 @@
       "@hooks/*": ["src/hooks/*"],
       "@constants/*": ["src/constants/*"],
       "@layouts/*": ["src/layouts/*"],
+      "@lib/*": ["src/lib/*"],
       "@types/*": ["src/types/*"],
       "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"],
       "@/*": ["src/*"]
     }
   }
