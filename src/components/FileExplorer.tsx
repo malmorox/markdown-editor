@@ -1,11 +1,12 @@
 import { useState, useRef } from 'react';
 import { IoClose } from 'react-icons/io5';
-import { HiDocumentPlus, HiFolderPlus, HiChevronRight, HiChevronDown } from 'react-icons/hi2';
+import { HiDocumentPlus, HiFolderPlus, HiPencilSquare, HiChevronRight, HiChevronDown } from 'react-icons/hi2';
 import { FiTrash2 } from 'react-icons/fi';
 import { Tree, type TreeApi } from 'react-arborist';
 import { db } from '@/lib/db';
 import { insertPendingNode, PENDING_NODE_ID } from '@/lib/insertPendingNode';
 import { createFileSystemEntry } from '@/lib/createEntry';
+import { renameFileSystemEntry } from '@lib/renameEntry';
 import { useFileTree } from '@hooks/files/useFileTree';
 import { useActiveFile } from '@hooks/files/useActiveFile';
 import { useEditor } from '@hooks/useEditor';
@@ -21,6 +22,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     const treeData = useFileTree();
     const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
     const [pendingNode, setPendingNode] = useState<PendingNodeInfo | null>(null);
+    const [renamingNodeId, setRenamingNodeId] = useState<string | null>(null);
     const { activeFileId, setActiveFileId } = useActiveFile();
     const { disposeFileModel } = useEditor();
     const isCreatingRef = useRef(false);
@@ -62,6 +64,24 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
 
     const discardPendingNode = () => setPendingNode(null);
 
+    const handleRename = () => {
+        if (!selectedNode) return;
+        setRenamingNodeId(selectedNode.id);
+    };
+
+    const confirmRename = async (rawName: string) => {
+        if (!renamingNodeId) return;
+
+        const name = rawName.trim();
+        if (name) {
+            await renameFileSystemEntry(renamingNodeId, name);
+        }
+
+        setRenamingNodeId(null);
+    };
+
+    const cancelRename = () => setRenamingNodeId(null);
+
     const handleDelete = async () => {
         if (!selectedNode) return;
 
@@ -78,12 +98,14 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     ? insertPendingNode(treeData, pendingNode)
     : treeData;
 
+    const isBusy = !!pendingNode || !!renamingNodeId;
+
     return (
         <aside className="w-64 h-full bg-[#D4D4D4] text-[#252526] flex flex-col border-r border-[#a8a8a8] shrink-0">
             <div className="flex items-center h-12 px-3 gap-1 bg-[#bbbbbb]">
                 <button
                     onClick={handleCreateFile}
-                    disabled={!!pendingNode}
+                    disabled={isBusy}
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Nuevo archivo"
                 >
@@ -91,15 +113,23 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                 </button>
                 <button
                     onClick={handleCreateFolder}
-                    disabled={!!pendingNode}
+                    disabled={isBusy}
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Nueva carpeta"
                 >
                     <HiFolderPlus size={20} />
                 </button>
                 <button
+                    onClick={handleRename}
+                    disabled={isBusy || !selectedNode}
+                    className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                    title="Renombrar seleccionado"
+                >
+                    <HiPencilSquare size={20} />
+                </button>
+                <button
                     onClick={handleDelete}
-                    disabled={!selectedNode}
+                    disabled={isBusy || !selectedNode}
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Eliminar seleccionado"
                 >
@@ -132,6 +162,19 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                                     isOpen={node.isOpen}
                                     onConfirm={confirmPendingNode}
                                     onCancel={discardPendingNode}
+                                />
+                            );
+                        }
+
+                        if (node.data.id === renamingNodeId) {
+                            return (
+                                <TreeNodeNameInput
+                                    type={node.data.type}
+                                    style={style}
+                                    isOpen={node.isOpen}
+                                    defaultValue={node.data.name}
+                                    onConfirm={confirmRename}
+                                    onCancel={cancelRename}
                                 />
                             );
                         }

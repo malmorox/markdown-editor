@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { useActiveFileEntry } from '@hooks/files/useActiveFileEntry';
-import { renameEntryFile } from '@/lib/renameEntryFile';
+import { renameFileSystemEntry } from '@lib/renameEntry';
 
 const ActiveFileName = () => {
     const activeEntry = useActiveFileEntry();
     const [isEditing, setIsEditing] = useState(false);
 
-    if (!activeEntry) return null; // nada abierto, nada que mostrar
+    if (!activeEntry) return null;
 
     const commitRename = async (rawName: string) => {
         const name = rawName.trim();
         if (name && name !== activeEntry.name) {
-            await renameEntryFile(activeEntry.id, name);
+            await renameFileSystemEntry(activeEntry.id, name);
         }
         setIsEditing(false);
     };
@@ -41,7 +41,7 @@ const ActiveFileName = () => {
     return (
         <button
             onClick={() => setIsEditing(true)}
-            className="text-sm text-[#bbbbbb] hover:text-white px-2 py-1 rounded hover:bg-[#4d4d4d] transition-colors cursor-pointer truncate max-w-50"
+            className="text-sm text-[#bbbbbb] hover:text-white px-2 py-1 rounded hover:bg-[#4d4d4d] transition-colors cursor-pointer truncate max-w-lg"
             title="Click para renombrar"
         >
             {activeEntry.name}

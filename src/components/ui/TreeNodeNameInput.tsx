@@ -5,11 +5,12 @@ interface TreeNodeNameInputProps {
     type: 'file' | 'folder';
     style: CSSProperties;
     isOpen?: boolean;
+    defaultValue?: string;
     onConfirm: (name: string) => void;
     onCancel: () => void;
 }
 
-const TreeNodeNameInput = ({ type, style, isOpen = false, onConfirm, onCancel }: TreeNodeNameInputProps) => {
+const TreeNodeNameInput = ({ type, style, isOpen = false, defaultValue = '', onConfirm, onCancel }: TreeNodeNameInputProps) => {
     const isFolder = type === 'folder';
 
     return (
@@ -17,11 +18,12 @@ const TreeNodeNameInput = ({ type, style, isOpen = false, onConfirm, onCancel }:
             {isFolder ? (
                 isOpen ? <HiChevronDown size={14} /> : <HiChevronRight size={14} />
             ) : (
-                <span className="w-3.5" />
+                <span className="w-3.5 shrink-0" />
             )}
             <input
                 autoFocus
-                defaultValue=""
+                defaultValue={defaultValue}
+                onFocus={(e) => e.currentTarget.select()}
                 className="flex-1 bg-white text-black text-sm px-1 py-0.5 rounded outline-none border border-[#888]"
                 onBlur={(e) => onConfirm(e.currentTarget.value)}
                 onKeyDown={(e) => {
