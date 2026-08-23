@@ -1,8 +1,8 @@
 import Dexie, { type Table } from 'dexie';
-import type { FileNode } from '@/types/file';
+import type { FileSystemEntry } from '@/types/file';
 
 class RuneQiDB extends Dexie {
-    files!: Table<FileNode, string>;
+    files!: Table<FileSystemEntry, string>;
 
     constructor() {
         super('runeqi-md');

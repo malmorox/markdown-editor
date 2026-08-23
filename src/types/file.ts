@@ -1,4 +1,4 @@
-export interface FileNode {
+export interface FileSystemEntry {
     id: string;
     name: string;
     type: 'file' | 'folder';
@@ -8,6 +8,11 @@ export interface FileNode {
     updatedAt: number;
 }
 
-export interface TreeNode extends FileNode {
+export interface TreeNode extends FileSystemEntry {
     children?: TreeNode[];
+}
+
+export interface PendingNodeInfo {
+    type: 'file' | 'folder';
+    parentId: string | null;
 }

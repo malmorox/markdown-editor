@@ -9,7 +9,7 @@ import { useActiveFile } from "@hooks/files/useActiveFile";
 import { db } from "@/lib/db";
 import { debounce } from "@utils/debounce";
 import type { editor } from 'monaco-editor';
-import { persistFileToDb } from "@utils/persistFile";
+import { persistFileToDb } from "@lib/persistFile";
 
 // Editor de Markdown con Monaco que sincroniza el contenido y aplica el tema seleccionado.
 const MarkdownEditor = () => {
