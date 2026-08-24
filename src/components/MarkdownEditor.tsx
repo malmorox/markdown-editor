@@ -103,7 +103,7 @@ const MarkdownEditor = () => {
 
         let cancelled = false;
         (async () => {
-            const file = await db.files.get(activeFileId);
+            const file = await db.entries.get(activeFileId);
             if (cancelled) return;
             loadFileModel(activeFileId, file?.content ?? '');
             setMarkdown(file?.content ?? '');

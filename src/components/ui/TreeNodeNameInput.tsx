@@ -14,7 +14,7 @@ const TreeNodeNameInput = ({ type, style, isOpen = false, defaultValue = '', onC
     const isFolder = type === 'folder';
 
     return (
-        <div style={style} className="px-2 py-1 flex items-center gap-1">
+        <div style={style} className="h-full box-border px-2 flex items-center gap-1 text-sm leading-5">
             {isFolder ? (
                 isOpen ? <HiChevronDown size={14} /> : <HiChevronRight size={14} />
             ) : (

@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
-import { HiDocumentPlus, HiFolderPlus, HiPencilSquare, HiChevronRight, HiChevronDown } from 'react-icons/hi2';
-import { FiTrash2 } from 'react-icons/fi';
+import { HiDocumentPlus, HiFolderPlus } from 'react-icons/hi2';
+import { FaPencilAlt, FaTrash } from 'react-icons/fa';
+import { GoTriangleRight, GoTriangleDown } from "react-icons/go";
 import { Tree, type TreeApi } from 'react-arborist';
 import { db } from '@/lib/db';
 import { insertPendingNode, PENDING_NODE_ID } from '@/lib/insertPendingNode';
@@ -28,6 +29,12 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     const isCreatingRef = useRef(false);
     const treeApiRef = useRef<TreeApi<TreeNode> | null>(null);
 
+    useEffect(() => {
+        if (pendingNode?.parentId) {
+            treeApiRef.current?.open(pendingNode.parentId);
+        }
+    }, [pendingNode]);
+
     if (!isOpen) return null;
 
     const resolveTargetParentId = (): string | null => {
@@ -38,10 +45,6 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     const handleCreateFile = () => {
         const parentId = resolveTargetParentId();
         setPendingNode({ type: 'file', parentId });
-
-        if (parentId) {
-            treeApiRef.current?.open(parentId);
-        }
     };
 
     const handleCreateFolder = () => {
@@ -55,7 +58,11 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
 
         const name = rawName.trim();
         if (name) {
-            await createFileSystemEntry(name, pendingNode);
+            const newEntry = await createFileSystemEntry(name, pendingNode);
+            setSelectedNode(newEntry);
+            if (newEntry.type === 'file') {
+                setActiveFileId(newEntry.id);
+            }
         }
 
         setPendingNode(null);
@@ -90,7 +97,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
             if (selectedNode.id === activeFileId) setActiveFileId(null);
         }
 
-        await db.files.delete(selectedNode.id);
+        await db.entries.delete(selectedNode.id);
         setSelectedNode(null);
     };
 
@@ -101,7 +108,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     const isBusy = !!pendingNode || !!renamingNodeId;
 
     return (
-        <aside className="w-64 h-full bg-[#D4D4D4] text-[#252526] flex flex-col border-r border-[#a8a8a8] shrink-0">
+        <aside className="w-72 h-full bg-[#D4D4D4] text-[#252526] flex flex-col shrink-0">
             <div className="flex items-center h-12 px-3 gap-1 bg-[#bbbbbb]">
                 <button
                     onClick={handleCreateFile}
@@ -125,7 +132,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Renombrar seleccionado"
                 >
-                    <HiPencilSquare size={20} />
+                    <FaPencilAlt size={18} />
                 </button>
                 <button
                     onClick={handleDelete}
@@ -133,7 +140,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Eliminar seleccionado"
                 >
-                    <FiTrash2 size={18} />
+                    <FaTrash size={18} />
                 </button>
                 <span className="flex-1" />
                 <button onClick={onClose} className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer" title="Cerrar explorador">
@@ -145,6 +152,8 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                 <Tree<TreeNode>
                     data={displayTreeData}
                     openByDefault={false}
+                    ref={treeApiRef}
+                    rowHeight={24}
                     width="100%"
                     onSelect={(nodes) => {
                         const node = nodes[0]?.data ?? null;
@@ -189,16 +198,16 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                                 onClick={() => {
                                     if (isFolder) node.toggle();
                                 }}
-                                className={`px-2 py-1 cursor-pointer text-sm rounded flex items-center gap-1 ${
+                                className={`h-full box-border px-2 cursor-pointer text-sm leading-5 flex items-center gap-1 ${
                                     isSelected ? 'bg-[#A8A8A8]' : ''
                                 }`}
                             >
                                 {isFolder ? (
-                                    node.isOpen ? <HiChevronDown size={14} /> : <HiChevronRight size={14} />
+                                    node.isOpen ? <GoTriangleDown size={14} /> : <GoTriangleRight size={14} />
                                 ) : (
                                     <span className="w-3.5" />
                                 )}
-                                <span>{node.data.name}</span>
+                                <span className="text-xm">{node.data.name}</span>
                             </div>
                         );
                     }}
