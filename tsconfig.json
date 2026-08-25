@@ -14,6 +14,7 @@
       "@layouts/*": ["src/layouts/*"],
       "@types/*": ["src/types/*"],
       "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"],
       "@/*": ["src/*"]
     }
   }
