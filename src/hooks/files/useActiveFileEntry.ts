@@ -1,5 +1,5 @@
 import { useFiles } from './useFiles';
-import { useActiveFile } from './useActiveFile';
+import { useActiveFile } from '../useActiveFile';
 
 export function useActiveFileEntry() {
     const files = useFiles();

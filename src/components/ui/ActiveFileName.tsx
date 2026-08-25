@@ -41,8 +41,7 @@ const ActiveFileName = () => {
     return (
         <button
             onClick={() => setIsEditing(true)}
-            className="text-sm text-[#bbbbbb] hover:text-white px-2 py-1 rounded hover:bg-[#4d4d4d] transition-colors cursor-pointer truncate max-w-lg"
-            title="Click para renombrar"
+            className="text-xl font-semibold text-center text-[#bbbbbb] hover:text-white px-2 py-1 rounded hover:bg-[#4d4d4d] transition-colors cursor-pointer truncate max-w-lg"
         >
             {activeEntry.name}
         </button>

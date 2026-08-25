@@ -62,7 +62,7 @@ const Toolbar = ({ onInsert, onSidebarToggle, isSidebarOpen, onExplorerToggle, i
                 />
             )}
 
-            <div className="flex items-center gap-1 ml-auto shrink-0">
+            <div className="flex items-center gap-3 ml-auto shrink-0">
                 <ActiveFileName />
                 <ToolbarToggleButton
                     icon={SlOptions}

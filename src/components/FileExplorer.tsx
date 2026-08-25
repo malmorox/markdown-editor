@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { HiDocumentPlus, HiFolderPlus } from 'react-icons/hi2';
 import { FaPencilAlt, FaTrash } from 'react-icons/fa';
@@ -8,8 +8,9 @@ import { db } from '@/lib/db';
 import { insertPendingNode, PENDING_NODE_ID } from '@/lib/insertPendingNode';
 import { createFileSystemEntry } from '@/lib/createEntry';
 import { renameFileSystemEntry } from '@lib/renameEntry';
+import { findNodeById } from '@/lib/findNodeById';
 import { useFileTree } from '@hooks/files/useFileTree';
-import { useActiveFile } from '@hooks/files/useActiveFile';
+import { useActiveFile } from '@hooks/useActiveFile';
 import { useEditor } from '@hooks/useEditor';
 import TreeNodeNameInput from '@components/ui/TreeNodeNameInput';
 import type { TreeNode, PendingNodeInfo } from '@/types/file';
@@ -29,6 +30,12 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     const isCreatingRef = useRef(false);
     const treeApiRef = useRef<TreeApi<TreeNode> | null>(null);
 
+    const effectiveSelectedNode = useMemo(() => {
+        if (selectedNode) return selectedNode;
+        if (!activeFileId) return null;
+        return findNodeById(treeData, activeFileId);
+    }, [selectedNode, activeFileId, treeData]);
+
     useEffect(() => {
         if (pendingNode?.parentId) {
             treeApiRef.current?.open(pendingNode.parentId);
@@ -38,8 +45,8 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     if (!isOpen) return null;
 
     const resolveTargetParentId = (): string | null => {
-        if (!selectedNode) return null;
-        return selectedNode.type === 'folder' ? selectedNode.id : selectedNode.parentId;
+        if (!effectiveSelectedNode) return null;
+        return effectiveSelectedNode.type === 'folder' ? effectiveSelectedNode.id : effectiveSelectedNode.parentId;
     };
 
     const handleCreateFile = () => {
@@ -72,8 +79,8 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     const discardPendingNode = () => setPendingNode(null);
 
     const handleRename = () => {
-        if (!selectedNode) return;
-        setRenamingNodeId(selectedNode.id);
+        if (!effectiveSelectedNode) return;
+        setRenamingNodeId(effectiveSelectedNode.id);
     };
 
     const confirmRename = async (rawName: string) => {
@@ -90,20 +97,20 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     const cancelRename = () => setRenamingNodeId(null);
 
     const handleDelete = async () => {
-        if (!selectedNode) return;
+        if (!effectiveSelectedNode) return;
 
-        if (selectedNode.type === 'file') {
-            disposeFileModel(selectedNode.id);
-            if (selectedNode.id === activeFileId) setActiveFileId(null);
+        if (effectiveSelectedNode.type === 'file') {
+            disposeFileModel(effectiveSelectedNode.id);
+            if (effectiveSelectedNode.id === activeFileId) setActiveFileId(null);
         }
 
-        await db.entries.delete(selectedNode.id);
+        await db.entries.delete(effectiveSelectedNode.id);
         setSelectedNode(null);
     };
 
     const displayTreeData = pendingNode
-    ? insertPendingNode(treeData, pendingNode)
-    : treeData;
+        ? insertPendingNode(treeData, pendingNode)
+        : treeData;
 
     const isBusy = !!pendingNode || !!renamingNodeId;
 
@@ -128,7 +135,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                 </button>
                 <button
                     onClick={handleRename}
-                    disabled={isBusy || !selectedNode}
+                    disabled={isBusy || !effectiveSelectedNode}
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Rename selected"
                 >
@@ -136,7 +143,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                 </button>
                 <button
                     onClick={handleDelete}
-                    disabled={isBusy || !selectedNode}
+                    disabled={isBusy || !effectiveSelectedNode}
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     title="Delete selected"
                 >
@@ -193,7 +200,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                         }
 
                         const isFolder = node.data.type === 'folder';
-                        const isSelected = node.data.id === selectedNode?.id;
+                        const isSelected = node.data.id === effectiveSelectedNode?.id;
 
                         return (
                             <div

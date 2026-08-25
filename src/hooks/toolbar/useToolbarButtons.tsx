@@ -19,7 +19,7 @@ import TableRowsColumnsSelector from '@components/ui/TableRowsColumnsSelector';
 import CodeLanguageSelector from '@components/ui/CodeLanguageSelector';
 import EmojiPicker from '@components/ui/EmojiPicker';
 import { HeadingContent, InputContent } from '@components/ui/ToolbarDropdownsContent';
-import { useMarkdownActions } from '@hooks/useMarkdownActions';
+import { useMarkdownActions } from '@hooks/markdown/useMarkdownActions';
 import { SHORTCUTS } from '@constants/shortcuts';
 import type { ToolbarButton } from '@/types/toolbar';
 

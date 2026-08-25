@@ -4,11 +4,13 @@ import MarkdownWorkspace from "@components/MarkdownWorkspace";
 import Sidebar from "@components/Sidebar";
 import FileExplorer from "@components/FileExplorer";
 import { useEditor } from "@hooks/useEditor"
+import { useEnsureDefaultFile } from "@hooks/files/useEnsureDefaultFile";
 
 const DesktopLayout = () => {
+    useEnsureDefaultFile();
     const { insertMarkdown } = useEditor();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [isFileExplorerOpen, setFileExplorerOpen] = useState(true);
+    const [isFileExplorerOpen, setFileExplorerOpen] = useState(false);
 
     return (
         <div className="w-screen h-screen flex overflow-hidden">
