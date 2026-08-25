@@ -114,7 +114,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                     onClick={handleCreateFile}
                     disabled={isBusy}
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Nuevo archivo"
+                    title="New file"
                 >
                     <HiDocumentPlus size={20} />
                 </button>
@@ -122,7 +122,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                     onClick={handleCreateFolder}
                     disabled={isBusy}
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Nueva carpeta"
+                    title="New folder"
                 >
                     <HiFolderPlus size={20} />
                 </button>
@@ -130,7 +130,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                     onClick={handleRename}
                     disabled={isBusy || !selectedNode}
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Renombrar seleccionado"
+                    title="Rename selected"
                 >
                     <FaPencilAlt size={18} />
                 </button>
@@ -138,13 +138,17 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                     onClick={handleDelete}
                     disabled={isBusy || !selectedNode}
                     className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Eliminar seleccionado"
+                    title="Delete selected"
                 >
                     <FaTrash size={18} />
                 </button>
                 <span className="flex-1" />
-                <button onClick={onClose} className="p-1 hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer" title="Cerrar explorador">
-                    <IoClose size={22} color="#2d2d30" />
+                <button 
+                    onClick={onClose} 
+                    className="p-1 text-[#2d2d30] hover:bg-[#A8A8A8] rounded transition-colors cursor-pointer" 
+                    title="Close explorer"
+                >
+                    <IoClose size={25} color="#2d2d30" />
                 </button>
             </div>
 
