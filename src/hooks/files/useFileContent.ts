@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
-import { db } from '@/lib/db';
+import { db } from '@helpers/db';
 import { debounce } from '@utils/debounce';
-import { persistFileToDb } from '@lib/persistFile';
+import { persistFileToDb } from '@helpers/persistFile';
 import { useMarkdown } from '@hooks/useMarkdown';
 
 export function useFileContent(activeFileId: string | null, onLoad: (content: string) => void) {

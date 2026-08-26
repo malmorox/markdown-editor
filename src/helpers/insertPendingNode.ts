@@ -1,6 +1,5 @@
 import type { TreeNode, PendingNodeInfo } from '@/types/file';
-
-export const PENDING_NODE_ID = '__pending-node__';
+import { PENDING_NODE_ID } from '@constants/fileSystem';
 
 export const insertPendingNode = (
     nodes: TreeNode[],

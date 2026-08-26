@@ -4,10 +4,10 @@ import MarkdownWorkspace from "@components/MarkdownWorkspace";
 import Sidebar from "@components/Sidebar";
 import FileExplorer from "@components/FileExplorer";
 import { useEditor } from "@hooks/useEditor"
-import { useEnsureDefaultFile } from "@hooks/files/useEnsureDefaultFile";
+import { useEnsureFileSystem } from "@hooks/files/useEnsureFileSystem";
 
 const DesktopLayout = () => {
-    useEnsureDefaultFile();
+    useEnsureFileSystem();
     const { insertMarkdown } = useEditor();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isFileExplorerOpen, setFileExplorerOpen] = useState(false);

@@ -1,4 +1,5 @@
 import type { FileSystemEntry, TreeNode } from '@/types/file';
+import { TRASH_ID, TEMP_ID } from '@constants/fileSystem';
 
 export function buildTree(nodes: FileSystemEntry[]): TreeNode[] {
     const map = new Map<string, TreeNode>();
@@ -15,5 +16,16 @@ export function buildTree(nodes: FileSystemEntry[]): TreeNode[] {
             map.get(n.parentId)?.children?.push(node);
         }
     });
+
+    const specialOrder = [TRASH_ID, TEMP_ID];
+    roots.sort((a, b) => {
+        const ai = specialOrder.indexOf(a.id);
+        const bi = specialOrder.indexOf(b.id);
+        if (ai === -1 && bi === -1) return 0;
+        if (ai === -1) return 1;
+        if (bi === -1) return -1;
+        return ai - bi;
+    });
+
     return roots;
 }

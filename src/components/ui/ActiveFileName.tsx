@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useActiveFileEntry } from '@hooks/files/useActiveFileEntry';
-import { renameFileSystemEntry } from '@lib/renameEntry';
+import { renameFileSystemEntry } from '@helpers/renameEntry';
 
 const ActiveFileName = () => {
     const activeEntry = useActiveFileEntry();

@@ -4,16 +4,18 @@ import { HiDocumentPlus, HiFolderPlus } from 'react-icons/hi2';
 import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { GoTriangleRight, GoTriangleDown } from "react-icons/go";
 import { Tree, type TreeApi } from 'react-arborist';
-import { db } from '@/lib/db';
-import { insertPendingNode, PENDING_NODE_ID } from '@/lib/insertPendingNode';
-import { createFileSystemEntry } from '@/lib/createEntry';
-import { renameFileSystemEntry } from '@lib/renameEntry';
-import { findNodeById } from '@/lib/findNodeById';
+import { db } from '@helpers/db';
+import { insertPendingNode } from '@helpers/insertPendingNode';
+import { createFileSystemEntry } from '@helpers/createEntry';
+import { renameFileSystemEntry } from '@helpers/renameEntry';
+import { findNodeById } from '@helpers/findNodeById';
 import { useFileTree } from '@hooks/files/useFileTree';
 import { useActiveFile } from '@hooks/useActiveFile';
 import { useEditor } from '@hooks/useEditor';
 import TreeNodeNameInput from '@components/ui/TreeNodeNameInput';
+//import ConfirmModal from '@components/ui/ConfirmModal';
 import type { TreeNode, PendingNodeInfo } from '@/types/file';
+import { PENDING_NODE_ID } from '@constants/fileSystem';
 
 interface FileExplorerProps {
     isOpen: boolean;
@@ -22,20 +24,32 @@ interface FileExplorerProps {
 
 const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
     const treeData = useFileTree();
+    // Explicit user selection made inside the tree (click on a node).
     const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
+    // Node currently being created (file/folder), rendered as an inline input
     const [pendingNode, setPendingNode] = useState<PendingNodeInfo | null>(null);
+    // Id of the node currently being renamed, rendered as an inline input
     const [renamingNodeId, setRenamingNodeId] = useState<string | null>(null);
     const { activeFileId, setActiveFileId } = useActiveFile();
     const { disposeFileModel } = useEditor();
+    // Prevents double-submission if confirmPendingNode fires twice
     const isCreatingRef = useRef(false);
     const treeApiRef = useRef<TreeApi<TreeNode> | null>(null);
 
+    /*
+    ** Resolves what the tree should visually treat as "selected":
+    ** - the user's explicit selection, if any
+    ** - otherwise, the currently active file (e.g. set externally by
+    **   useEnsureDefaultFile on first launch, or after deleting a file)
+    ** Derived with useMemo instead of synced via useEffect + setState.
+    */
     const effectiveSelectedNode = useMemo(() => {
         if (selectedNode) return selectedNode;
         if (!activeFileId) return null;
         return findNodeById(treeData, activeFileId);
     }, [selectedNode, activeFileId, treeData]);
 
+    // Auto-expand the parent folder so the inline "new node" input is visible
     useEffect(() => {
         if (pendingNode?.parentId) {
             treeApiRef.current?.open(pendingNode.parentId);
@@ -44,6 +58,8 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
 
     if (!isOpen) return null;
 
+    // New files/folders are created inside the selected folder, or as a
+    // sibling of the selected file (using its parentId). Root if nothing selected.
     const resolveTargetParentId = (): string | null => {
         if (!effectiveSelectedNode) return null;
         return effectiveSelectedNode.type === 'folder' ? effectiveSelectedNode.id : effectiveSelectedNode.parentId;
@@ -100,6 +116,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
         if (!effectiveSelectedNode) return;
 
         if (effectiveSelectedNode.type === 'file') {
+            // Dispose the Monaco model to avoid holding onto a stale/orphaned model
             disposeFileModel(effectiveSelectedNode.id);
             if (effectiveSelectedNode.id === activeFileId) setActiveFileId(null);
         }
@@ -108,10 +125,12 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
         setSelectedNode(null);
     };
 
+    // Injects a temporary placeholder node into the tree while creating a new file/folder
     const displayTreeData = pendingNode
         ? insertPendingNode(treeData, pendingNode)
         : treeData;
-
+    
+    // Disables toolbar actions while an inline create/rename input is active
     const isBusy = !!pendingNode || !!renamingNodeId;
 
     return (
@@ -168,6 +187,7 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                     width="100%"
                     onSelect={(nodes) => {
                         const node = nodes[0]?.data ?? null;
+                        // Ignore selection events for the temporary placeholder node
                         if (node?.id === PENDING_NODE_ID) return;
                         setSelectedNode(node);
                         if (node?.type === 'file') setActiveFileId(node.id);
@@ -225,6 +245,22 @@ const FileExplorer = ({ isOpen, onClose }: FileExplorerProps) => {
                 </Tree>
             </div>
         </aside>
+        /*{confirmAction && (
+            <ConfirmModal
+                title={
+                    confirmAction.kind === 'empty'
+                        ? `Empty ${confirmAction.folderName}?`
+                        : `Delete "${confirmAction.nodeName}" permanently?`
+                }
+                message={
+                    confirmAction.kind === 'empty'
+                        ? `All files inside ${confirmAction.folderName} will be permanently deleted. This can't be undone.`
+                        : `This will permanently delete "${confirmAction.nodeName}". This can't be undone.`
+                }
+                onConfirm={runConfirmedAction}
+                onCancel={() => setConfirmAction(null)}
+            />
+        )}*/
     );
 };
 
